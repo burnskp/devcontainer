@@ -6,7 +6,7 @@
   "lsp": {
     "custom-lsp": {
       "command": ["terraform-ls", "serve"],
-      "extensions": [".tf", ".hcl", ".tfvars"]
-    }
-  }
+      "extensions": [".tf", ".hcl", ".tfvars"],
+    },
+  },
 }

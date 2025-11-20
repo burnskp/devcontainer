@@ -1,3 +1,5 @@
+# checkov:skip=CKV_DOCKER_2: This container doesn't need healthchecks
+# hadolint global ignore=DL3008,DL3015,DL4006
 FROM ubuntu:25.04
 
 ARG goVersion=1.25.4
@@ -45,10 +47,10 @@ RUN add-apt-repository universe \
   wget \
   zoxide \
   zsh \
-  && curl -fsSL https://deb.nodesource.com/setup_${nodeVersion}.x | bash - \
+  && curl -fsSL "https://deb.nodesource.com/setup_${nodeVersion}.x" | bash - \
   && apt-get update && apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/*  \
-  && ln -s $(which fdfind) /usr/local/bin/fd
+  && ln -s "$(which fdfind)" /usr/local/bin/fd
 
 RUN curl -sLo /nvim.tgz https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
  && mkdir /neovim \

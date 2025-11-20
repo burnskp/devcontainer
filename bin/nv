@@ -5,11 +5,11 @@ set -euo pipefail
 readonly DATA="$HOME/.local/share/devcontainer"
 readonly CONTAINER="ghcr.io/burnskp/containers/dev:latest"
 
-if ! docker image inspect "$CONTAINER" 2>/dev/null; then
-    echo "Image not found locally. Pulling $CONTAINER..."
-    docker pull "$CONTAINER"
+if ! docker image inspect "$CONTAINER" 2> /dev/null; then
+  echo "Image not found locally. Pulling $CONTAINER..."
+  docker pull "$CONTAINER"
 else
-    docker pull "$CONTAINER" || true
+  docker pull "$CONTAINER" || true
 fi
 
 # Helper function to run docker container with common volumes
@@ -74,7 +74,7 @@ if [ $# -gt 0 ]; then
   fi
 
   # Check if target is in a git repository
-  if git -C "$(dirname "$(realpath "$target")")" rev-parse 2>/dev/null; then
+  if git -C "$(dirname "$(realpath "$target")")" rev-parse 2> /dev/null; then
     if [ -f "$target" ]; then
       handle_git_file "$target" "${args[@]}"
     fi
@@ -84,7 +84,7 @@ if [ $# -gt 0 ]; then
     echo "Error: target '$target' is not a valid file or directory" >&2
     exit 1
   fi
-elif git -C "$PWD" rev-parse 2>/dev/null; then
+elif git -C "$PWD" rev-parse 2> /dev/null; then
   # No target specified, use current directory if it's a git repo
   handle_git_dir "$PWD"
 else

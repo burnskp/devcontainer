@@ -5,16 +5,14 @@ set -euo pipefail
 readonly DATA="$HOME/.local/share/devcontainer"
 readonly CONTAINER="ghcr.io/burnskp/containers/dev:latest"
 
-
-
-if ! docker image inspect "$CONTAINER" 2>/dev/null; then
-    echo "Image not found locally. Pulling $CONTAINER..."
-    docker pull "$CONTAINER"
+if ! docker image inspect "$CONTAINER" 2> /dev/null; then
+  echo "Image not found locally. Pulling $CONTAINER..."
+  docker pull "$CONTAINER"
 else
-    docker pull "$CONTAINER" || true
+  docker pull "$CONTAINER" || true
 fi
 
-if git -C "$(dirname "$(realpath "$PWD")")" rev-parse 2>/dev/null; then
+if git -C "$(dirname "$(realpath "$PWD")")" rev-parse 2> /dev/null; then
   root="$(git -C "$(dirname "$(realpath "$PWD")")" rev-parse --show-toplevel)"
 else
   root="$PWD"
