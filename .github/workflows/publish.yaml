@@ -32,16 +32,16 @@ jobs:
         echo "name=${name}" >> "$GITHUB_OUTPUT"
         echo "context=./${dockerfile%%/Dockerfile}" >> "$GITHUB_OUTPUT"
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
     - name: Log in to the Container registry
-      uses: docker/login-action@ef38ec311a7df3f01475313e7c5bb584b74b112a
+      uses: docker/login-action@28fdb31ff34708d19615a74d67103ddc2ea9725c
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Extract metadata (tags, labels) for Docker
       id: meta
-      uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f
+      uses: docker/metadata-action@318604b99e75e41977312d83839a89be02ca4893
       with:
         images: ${{ env.REGISTRY }}/${{ steps.container.outputs.name }}
         tags: |
