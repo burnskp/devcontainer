@@ -1,0 +1,65 @@
+#!/bin/zsh
+umask 022
+
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_CACHE_HOME="$HOME/.cache"
+
+if ! [ -d "$XDG_STATE_HOME/zsh" ]; then
+  mkdir -p $XDG_STATE_HOME/zsh
+fi
+
+set -o noclobber
+setopt nobeep
+setopt completeinword
+setopt correct
+setopt extended_glob
+setopt hash_list_all
+setopt interactivecomments
+setopt noflowcontrol
+setopt nonomatch
+setopt noshwordsplit
+setopt prompt_subst
+
+export BAT_THEME="catppuccin-latte"
+export GLAMOUR_STYLE="$HOME/.config/glamour/catppuccin-latte.json"
+export EDITOR="nvim"
+export LESS=-R
+export PAGER="less -R"
+
+export ANSIBLE_HOME="$XDG_DATA_HOME/ansible"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export CODEX_HOME="$XDG_DATA_HOME/codex"
+export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME/claude"
+export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
+export GEM_HOME="$XDG_DATA_HOME/gem"
+export GEM_SPEC_CACHE="$XDG_CACHE_HOME/gem"
+export GNUPGHOME="$XDG_DATA_HOME/gnupg"
+export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export PYTHON_HISTORY="$XDG_DATA_HOME/share/python/history"
+export RBENV_ROOT="$XDG_DATA_HOME/rbenv"
+
+export GOPATH=$HOME/.local/share/go
+export GOBIN=$GOPATH/bin
+
+path="/usr/bin"
+check_paths=("/usr/local/bin")
+check_paths+="${GOBIN}"
+check_paths+="${HOME}/.cargo/bin"
+check_paths+="${HOME}/.local/bin"
+check_paths+="${HOME}/.local/share/node/bin"
+check_paths+="${HOME}/.local/share/nvim/mason/bin"
+check_paths+="${HOME}/bin"
+check_paths+="${XDG_DATA_HOME}/npm/bin"
+
+for p in $check_paths; do
+  if [[ -d "$p" ]]; then
+    path+="$p"
+  fi
+done
+
+typeset -U PATH
+export PATH

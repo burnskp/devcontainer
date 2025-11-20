@@ -1,0 +1,70 @@
+[alias]
+  bm = branch --merged
+  dd = diff --dirstat --find-copies --find-renames --histogram --color
+  discard = !git stash save --keep-index --include-untracked && git stash drop
+  prune = fetch --prune
+  sl = stash list --pretty=format:\"%C(red)%h%C(reset) - %C(dim yellow)(%C(bold magenta)%gd%C(dim yellow))%C(reset) %<(70,trunc)%s %C(gree  n)(%cr) %C(bold blue)<%an>%C(reset)\"
+  stash-all = stash save --include-untracked
+  undo = reset --soft HEAD^
+  unstage = reset HEAD --
+[core]
+   pager = delta
+   editor = nvim
+[commit]
+  gpgsign = true
+  verbose = true
+[gpg]
+	format = ssh
+[gpg "ssh"]
+  allowedSignersFile = ~/.ssh/allow_signers
+[include]
+  path = ~/.config/git/catppuccin.gitconfig
+[delta]
+  features = line-numbers decorations catppuccin-latte
+  line-numbers = true
+  whitespace-error-style = 22 reverse
+[diff]
+  algorithm = patience
+  colorMoved = default
+  tool = meld
+[filter "lfs"]
+  process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+[help]
+  autocorrect = 1
+[http "https://gopkg.in"]
+  followRedirects = true
+[init]
+  defaultBranch = main
+[interactive]
+  diffFilter = delta
+[merge]
+  tool = diffview
+  conflictstyle = zdiff3
+[mergetool "diffview"]
+	prompt = false
+	keepBackup = false
+	layout = "LOCAL,BASE,REMOTE / MERGED"
+	cmd = nvim -n -c "DiffviewOpen" "$MERGE" -c "DiffviewToggleFiles"
+[pager]
+  diff = delta
+  log = delta
+  reflog = delta
+  show = delta
+[pull]
+  rebase = true
+[push]
+  default = simple
+  followTags = true
+[rerere]
+  enabled = true
+[status]
+  showUntrackedFiles = all
+[user]
+  name = Kevin Burns
+  email = "kevin@burnskp.com"
+
+  signingkey = "key::sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIEwvWRIj+HRITeQDON2QtXpiIF5vIc31MytAtv4FEHzrAAAABHNzaDo="
+
