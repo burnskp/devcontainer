@@ -14,7 +14,7 @@ jobs:
       statuses: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         # super-linter needs the full git history to get the
         # list of files that changed across commits
@@ -35,7 +35,7 @@ jobs:
       packages: read
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: changed-files
       id: changed-files
       uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c  # v46
