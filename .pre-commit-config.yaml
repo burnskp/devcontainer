@@ -32,3 +32,7 @@ repos:
   rev: v0.10.0.1
   hooks:
   - id: shellcheck
+- repo: https://github.com/biomejs/pre-commit
+  rev: v2.3.8
+  hooks:
+  - id: biome-check
