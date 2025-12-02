@@ -19,12 +19,15 @@ jobs:
         # super-linter needs the full git history to get the
         # list of files that changed across commits
         fetch-depth: 0
+        persist-credentials: false
     - name: Super-linter
       uses: super-linter/super-linter/slim@2bdd90ed3262e023ac84bf8fe35dc480721fc1f2
       env:
         # To report GitHub Actions status checks
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         VALIDATE_YAML_PRETTIER: false
+        VALIDATE_JSON_PRETTIER: false
+        VALIDATE_JSONC_PRETTIER: false
   changed-containers:
     name: changed-containers
     if: github.ref == 'refs/heads/main'
@@ -36,6 +39,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+      with:
+        persist-credentials: false
     - name: changed-files
       id: changed-files
       uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62
@@ -43,8 +48,6 @@ jobs:
         files: |
           containers/*/Dockerfile
         matrix: true
-    - name: List all changed files
-      run: echo ${{ steps.changed-files.outputs.all_changed_files }}
     outputs:
       matrix: ${{ steps.changed-files.outputs.all_changed_files }}
   build-and-push-image:

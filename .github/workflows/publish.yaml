@@ -33,6 +33,8 @@ jobs:
         echo "context=./${dockerfile%%/Dockerfile}" >> "$GITHUB_OUTPUT"
     - name: Checkout repository
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5.0.1
+      with:
+        persist-credentials: false
     - name: Log in to the Container registry
       uses: docker/login-action@28fdb31ff34708d19615a74d67103ddc2ea9725c
       with:
