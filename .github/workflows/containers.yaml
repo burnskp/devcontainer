@@ -28,6 +28,7 @@ jobs:
         VALIDATE_YAML_PRETTIER: false
         VALIDATE_JSON_PRETTIER: false
         VALIDATE_JSONC_PRETTIER: false
+        LUA_LINTER_RULES: .luacheckrc
   changed-containers:
     name: changed-containers
     if: github.ref == 'refs/heads/main'
