@@ -1,3 +1,4 @@
+#!/bin/zsh
 bindkey -e
 bindkey "\e[1~" beginning-of-line    # Home
 bindkey "\e[4~" end-of-line          # End

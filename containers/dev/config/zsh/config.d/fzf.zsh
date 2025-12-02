@@ -27,13 +27,13 @@ if [[ $commands[fzf] ]]; then
     file=$(git log --all --pretty=format: --name-only | sort -u | grep -v '^$' | fzf --prompt="Select file: ")
     [[ -z $file ]] && return
     local commit
-    commit=$(git log --oneline -- $file | \
-        fzf --preview "git show {1}:$file | bat --style=numbers --color=always --line-range :500 - 2>/dev/null || echo 'File deleted in this commit'" \
+    commit=$(git log --oneline -- $file |
+      fzf --preview "git show {1}:$file | bat --style=numbers --color=always --line-range :500 - 2>/dev/null || echo 'File deleted in this commit'" \
         --prompt="Select commit: " \
         --delimiter=' ' \
         --with-nth=1,2.. \
-        --preview-window=up:60%:wrap \
-      | awk '{print $1}')
+        --preview-window=up:60%:wrap |
+      awk '{print $1}')
     [[ $commit ]] && git checkout "$commit" -- "$file"
   }
 

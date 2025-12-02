@@ -1,3 +1,4 @@
+#!/bin/zsh
 FPATH="$XDG_CONFIG_HOME/zsh/completions:$FPATH"
 
 # Enable smart autocompletion

@@ -1,3 +1,4 @@
+#!/bin/zsh
 # global dot aliases
 alias -g ...='../..'
 alias -g ....='../../..'
