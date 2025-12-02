@@ -1,5 +1,6 @@
 # checkov:skip=CKV_DOCKER_2: This container doesn't need healthchecks
 # hadolint global ignore=DL3008,DL3015,DL4006
+# trivy:ignore:AVD-DS-0026 trivy:ignore:AVD-DS-0029
 FROM ubuntu:25.04
 
 ARG goVersion=1.25.4
