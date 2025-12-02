@@ -5,3 +5,4 @@ vim.opt.mouse = ""
 vim.opt.linebreak = true
 vim.g.loaded_perl_provider = 0
 vim.g.autoformat = true
+vim.g.lazyvim_prettier_needs_config = true
