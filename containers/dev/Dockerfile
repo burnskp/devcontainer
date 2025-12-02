@@ -24,7 +24,6 @@ RUN add-apt-repository universe \
   && apt-get update \
   && apt-get full-upgrade -y \
   && apt-get install -y \
-  atuin \
   bat \
   build-essential \
   cargo \
@@ -56,24 +55,24 @@ RUN add-apt-repository universe \
   && ln -s "$(which fdfind)" /usr/local/bin/fd
 
 RUN curl -L https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${TARGETARCH}.tar.gz -o nvim.tgz \
- && mkdir /neovim \
- && tar xf /nvim.tgz \
- && rm /nvim.tgz \
- && mv /nvim-linux-${TARGETARCH} /nvim \
- && curl -sLo /go.tgz https://go.dev/dl/go${goVersion}.linux-${TARGETARCH}.tar.gz \
- && tar -C /usr/local -xf /go.tgz \
- && rm /go.tgz
+  && mkdir /neovim \
+  && tar xf /nvim.tgz \
+  && rm /nvim.tgz \
+  && mv /nvim-linux-${TARGETARCH} /nvim \
+  && curl -sLo /go.tgz https://go.dev/dl/go${goVersion}.linux-${TARGETARCH}.tar.gz \
+  && tar -C /usr/local -xf /go.tgz \
+  && rm /go.tgz
 
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
- && mv ~/.local/bin/uv /usr/local/bin/uv
+  && mv ~/.local/bin/uv /usr/local/bin/uv
 
 RUN npm i -g @openai/codex \
- && npm i -g opencode-ai \
- && npm i -g @google/gemini-cli \
- && npm i -g @fission-ai/openspec@latest \
- && npm i -g codemachine \
- && npm i -g tree-sitter-cli \
- && uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+  && npm i -g opencode-ai \
+  && npm i -g @google/gemini-cli \
+  && npm i -g @fission-ai/openspec@latest \
+  && npm i -g codemachine \
+  && npm i -g tree-sitter-cli \
+  && uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 
 # User Setup
 RUN groupadd neovim && useradd -g neovim -ms /bin/bash neovim \
@@ -91,14 +90,13 @@ ENV ZDOTDIR="$HOME/.config/zsh"
 
 # Make Links
 RUN mkdir -p $HOME/.config $HOME/.local/share \
- && ln -s /data/github-copilot $HOME/.config/github-copilot \
- && ln -s /data/claude $HOME/.config/claude \
- && ln -s /data/exercism $HOME/.config/exercism \
- && ln -s /data/bootdev.yaml $HOME/.bootdev.yaml \
- && ln -s /data/codex $HOME/.local/share/codex \
- && ln -s /data/opencode $HOME/.local/share/opencode \
- && ln -s /data/atuin $HOME/.local/share/atuin \
- && ln -s /data/zoxide $HOME/.local/share/zoxide
+  && ln -s /data/github-copilot $HOME/.config/github-copilot \
+  && ln -s /data/claude $HOME/.config/claude \
+  && ln -s /data/exercism $HOME/.config/exercism \
+  && ln -s /data/bootdev.yaml $HOME/.bootdev.yaml \
+  && ln -s /data/codex $HOME/.local/share/codex \
+  && ln -s /data/opencode $HOME/.local/share/opencode \
+  && ln -s /data/zoxide $HOME/.local/share/zoxide
 
 # Setup Neovim
 USER neovim

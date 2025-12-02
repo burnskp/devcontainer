@@ -73,7 +73,7 @@ if [ $# -gt 0 ]; then
   fi
 
   # Check if target is in a git repository
-  if git -C "$(dirname "$(realpath "$target")")" rev-parse 2> /dev/null; then
+  if git -C "$(dirname "$(realpath "$target")")" rev-parse 2>/dev/null; then
     if [ -f "$target" ]; then
       handle_git_file "$@"
     fi
@@ -83,7 +83,7 @@ if [ $# -gt 0 ]; then
     echo "Error: target '$target' is not a valid file or directory" >&2
     exit 1
   fi
-elif git -C "$PWD" rev-parse 2> /dev/null; then
+elif git -C "$PWD" rev-parse 2>/dev/null; then
   # No target specified, use current directory if it's a git repo
   handle_git_dir "$PWD"
 else
