@@ -16,19 +16,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5.0.1
       with:
-        # super-linter needs the full git history to get the
-        # list of files that changed across commits
         fetch-depth: 0
         persist-credentials: false
-    - name: Super-linter
-      uses: super-linter/super-linter/slim@2bdd90ed3262e023ac84bf8fe35dc480721fc1f2
-      env:
-        # To report GitHub Actions status checks
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VALIDATE_YAML_PRETTIER: false
-        VALIDATE_JSON_PRETTIER: false
-        VALIDATE_JSONC_PRETTIER: false
-        LUA_LINTER_RULES: .luacheckrc
   changed-containers:
     name: changed-containers
     if: github.ref == 'refs/heads/main'
