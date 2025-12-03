@@ -60,7 +60,6 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
   export NVIM="nvim-linux-${TARGETARCH}"; \
   fi \
   && curl -L https://github.com/neovim/neovim/releases/latest/download/$NVIM.tar.gz -o nvim.tgz \
-  && mkdir /neovim \
   && tar xf /nvim.tgz \
   && rm /nvim.tgz \
   && mv /$NVIM /nvim \
@@ -79,17 +78,14 @@ RUN npm i -g @openai/codex \
   && npm i -g tree-sitter-cli \
   && uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 
-# User Setup
-RUN groupadd neovim && useradd -g neovim -ms /bin/bash neovim \
-  && mkdir -p /home/neovim/.config/nvim
+COPY linters/cbfmt.toml /home/ubuntu/.cbfmt.toml
+COPY config /home/ubuntu/.config
+RUN chown -R ubuntu:ubuntu /home/ubuntu \
+  && chsh -s /bin/zsh ubuntu
 
-COPY linters/cbfmt.toml /home/neovim/.cbfmt.toml
-COPY config /home/neovim/.config
-RUN chown -R neovim:neovim /home/neovim
-
-USER neovim
-WORKDIR /home/neovim
-ENV HOME="/home/neovim"
+USER ubuntu
+WORKDIR /home/ubuntu
+ENV HOME="/home/ubuntu"
 ENV PATH="$PATH:/usr/local/go/bin:/nvim/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/luals/bin:$HOME/dasht/bin"
 ENV ZDOTDIR="$HOME/.config/zsh"
 
@@ -104,7 +100,6 @@ RUN mkdir -p $HOME/.config $HOME/.local/share \
   && ln -s /data/zoxide $HOME/.local/share/zoxide
 
 # Setup Neovim
-USER neovim
 RUN mkdir -p ~/.local/share/nvim
 RUN nvim --headless -c "luafile ~/.config/nvim/update.lua" -c "qall" 2>&1 \
   | tee ~/.local/share/nvim/update.log
