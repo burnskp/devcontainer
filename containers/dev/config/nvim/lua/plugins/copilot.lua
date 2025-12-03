@@ -3,9 +3,8 @@ return {
   cmd = "Copilot",
   event = "InsertEnter",
   opts = {
-    sugestion = { enabled = false },
-    panel = { enabled = false },
     filetypes = {
+      markdown = false,
       yaml = true,
     },
   },
