@@ -45,9 +45,8 @@ export RBENV_ROOT="$XDG_DATA_HOME/rbenv"
 export GOPATH=$HOME/.local/share/go
 export GOBIN=$GOPATH/bin
 
-path="/usr/bin"
-check_paths=("/usr/local/bin")
 check_paths+="${GOBIN}"
+check_paths+="/nvim/bin"
 check_paths+="${HOME}/.cargo/bin"
 check_paths+="${HOME}/.local/bin"
 check_paths+="${HOME}/.local/share/node/bin"

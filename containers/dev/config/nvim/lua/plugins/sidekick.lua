@@ -1,13 +1,6 @@
 return {
   "folke/sidekick.nvim",
   opts = {
-    cli = {
-      mux = {
-        backend = "tmux",
-        enabled = true,
-        create = "split",
-      },
-    },
     tools = {
       opencode = {
         cmd = { "opencode" },
@@ -29,13 +22,13 @@ return {
     { "<leader>ap", false },
     { "<leader>A", "", desc = "+sidekick", mode = { "n", "v" } },
     {
-      "<leader>Aa",
+      "<leader>Ao",
       function() require("sidekick.cli").toggle({ name = "opencode" }) end,
       desc = "Sidekick Toggle CLI",
     },
     {
-      "<leader>AA",
-      function() require("sidekick.cli").toggle({ name = "opencode" }) end,
+      "<leader>Aa",
+      function() require("sidekick.cli").toggle() end,
       desc = "Sidekick Toggle CLI",
     },
     {
