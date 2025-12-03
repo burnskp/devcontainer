@@ -54,11 +54,16 @@ RUN add-apt-repository universe \
   && rm -rf /var/lib/apt/lists/*  \
   && ln -s "$(which fdfind)" /usr/local/bin/fd
 
-RUN curl -L https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${TARGETARCH}.tar.gz -o nvim.tgz \
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+  export NVIM=nvim-linux-x86_64; \
+  else \
+  export NVIM="nvim-linux-${TARGETARCH}"; \
+  fi \
+  && curl -L https://github.com/neovim/neovim/releases/latest/download/$NVIM.tar.gz -o nvim.tgz \
   && mkdir /neovim \
   && tar xf /nvim.tgz \
   && rm /nvim.tgz \
-  && mv /nvim-linux-${TARGETARCH} /nvim \
+  && mv /$NVIM /nvim \
   && curl -sLo /go.tgz https://go.dev/dl/go${goVersion}.linux-${TARGETARCH}.tar.gz \
   && tar -C /usr/local -xf /go.tgz \
   && rm /go.tgz
