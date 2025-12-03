@@ -10,11 +10,15 @@ alias sz="source $XDG_CONFIG_HOME/zsh/.zshrc"
 alias va='source .venv/bin/activate'
 alias vi="nvim"
 
-alias bathelp='bat --plain --language=help'
-alias bl="bat --paging=never -l log"
-alias cat='bat -p --paging=never'
-alias catl='bat --style header,snip,grid --pager=never'
-alias catp='bat --style header,snip,grid'
+if [ $commands[batcat] ]; then
+  alias bat=batcat
+fi
+
+alias bathelp='batcat --plain --language=help'
+alias bl="batcat --paging=never -l log"
+alias cat='batcat -p --paging=never'
+alias catl='batcat --style header,snip,grid --pager=never'
+alias catp='batcat --style header,snip,grid'
 alias diff="batdiff --delta"
 alias man="batman"
 alias pretty="prettybat"
