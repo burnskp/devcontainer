@@ -1,5 +1,7 @@
 return {
   "saghen/blink.cmp",
+  version = '1.*',
+  build = false,
   opts = {
     completion = {
       list = {

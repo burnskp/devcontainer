@@ -4,6 +4,9 @@ FROM ubuntu:25.04
 
 ARG goVersion=1.25.4
 ARG nodeVersion=22
+ARG TARGETARCH
+ENV GOOS=linux
+ENV GOARCH=${TARGETARCH}
 
 ENV DEBIAN_FRONTEND=noninteractive
 # Set the locale
@@ -21,9 +24,9 @@ RUN add-apt-repository universe \
   && apt-get update \
   && apt-get full-upgrade -y \
   && apt-get install -y \
-  atuin \
   bat \
   build-essential \
+  cargo \
   curl \
   eza \
   fd-find \
@@ -39,7 +42,6 @@ RUN add-apt-repository universe \
   ripgrep \
   ruby \
   ruby-dev \
-  rustup \
   sqlite3 \
   starship \
   tmux \
@@ -52,24 +54,25 @@ RUN add-apt-repository universe \
   && rm -rf /var/lib/apt/lists/*  \
   && ln -s "$(which fdfind)" /usr/local/bin/fd
 
-RUN curl -sLo /nvim.tgz https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
- && mkdir /neovim \
- && tar xf /nvim.tgz \
- && rm /nvim.tgz \
- && mv /nvim-linux-x86_64 /nvim \
- && curl -sLo /go.tgz https://go.dev/dl/go${goVersion}.linux-amd64.tar.gz \
- && tar -C /usr/local -xf /go.tgz \
- && rm /go.tgz
+RUN curl -L https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${TARGETARCH}.tar.gz -o nvim.tgz \
+  && mkdir /neovim \
+  && tar xf /nvim.tgz \
+  && rm /nvim.tgz \
+  && mv /nvim-linux-${TARGETARCH} /nvim \
+  && curl -sLo /go.tgz https://go.dev/dl/go${goVersion}.linux-${TARGETARCH}.tar.gz \
+  && tar -C /usr/local -xf /go.tgz \
+  && rm /go.tgz
 
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
- && mv ~/.local/bin/uv /usr/local/bin/uv
+  && mv ~/.local/bin/uv /usr/local/bin/uv
 
 RUN npm i -g @openai/codex \
- && npm i -g opencode-ai \
- && npm i -g @google/gemini-cli \
- && npm i -g @fission-ai/openspec@latest \
- && npm i -g codemachine \
- && uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+  && npm i -g opencode-ai \
+  && npm i -g @google/gemini-cli \
+  && npm i -g @fission-ai/openspec@latest \
+  && npm i -g codemachine \
+  && npm i -g tree-sitter-cli \
+  && uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 
 # User Setup
 RUN groupadd neovim && useradd -g neovim -ms /bin/bash neovim \
@@ -85,20 +88,20 @@ ENV HOME="/home/neovim"
 ENV PATH="$PATH:/usr/local/go/bin:/nvim/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/luals/bin:$HOME/dasht/bin"
 ENV ZDOTDIR="$HOME/.config/zsh"
 
+# Make Links
+RUN mkdir -p $HOME/.config $HOME/.local/share \
+  && ln -s /data/github-copilot $HOME/.config/github-copilot \
+  && ln -s /data/claude $HOME/.config/claude \
+  && ln -s /data/exercism $HOME/.config/exercism \
+  && ln -s /data/bootdev.yaml $HOME/.bootdev.yaml \
+  && ln -s /data/codex $HOME/.local/share/codex \
+  && ln -s /data/opencode $HOME/.local/share/opencode \
+  && ln -s /data/zoxide $HOME/.local/share/zoxide
+
 # Setup Neovim
 USER neovim
 RUN mkdir -p ~/.local/share/nvim
 RUN nvim --headless -c "luafile ~/.config/nvim/update.lua" -c "qall" 2>&1 \
-    | tee ~/.local/share/nvim/update.log
-
-# Make Links
-RUN ln -s /data/github-copilot $HOME/.config/github-copilot \
- && ln -s /data/claude $HOME/.config/claude \
- && ln -s /data/exercism $HOME/.config/exercism \
- && ln -s /data/bootdev.yaml $HOME/.bootdev.yaml \
- && ln -s /data/codex $HOME/.local/share/codex \
- && ln -s /data/opencode $HOME/.local/share/opencode \
- && ln -s /data/atuin $HOME/.local/share/atuin \
- && ln -s /data/zoxide $HOME/.local/share/zoxide
+  | tee ~/.local/share/nvim/update.log
 
 ENTRYPOINT ["nvim"]

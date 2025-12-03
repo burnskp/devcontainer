@@ -5,7 +5,7 @@ set -euo pipefail
 readonly DATA="$HOME/.local/share/devcontainer"
 readonly CONTAINER="ghcr.io/burnskp/containers/dev:latest"
 
-if ! docker image inspect "$CONTAINER" 2> /dev/null; then
+if ! docker image inspect "$CONTAINER" >/dev/null 2>&1; then
   echo "Image not found locally. Pulling $CONTAINER..."
   docker pull "$CONTAINER"
 else
@@ -66,7 +66,6 @@ handle_git_dir() {
 # Main logic
 if [ $# -gt 0 ]; then
   target="${!#}"
-  args=("${@:1:${#}-1}")
 
   # Create file if it doesn't exist and parent directory does
   if ! [ -e "$target" ] && [ -d "$(dirname "$target")" ]; then
@@ -74,17 +73,17 @@ if [ $# -gt 0 ]; then
   fi
 
   # Check if target is in a git repository
-  if git -C "$(dirname "$(realpath "$target")")" rev-parse 2> /dev/null; then
+  if git -C "$(dirname "$(realpath "$target")")" rev-parse 2>/dev/null; then
     if [ -f "$target" ]; then
-      handle_git_file "$target" "${args[@]}"
+      handle_git_file "$@"
     fi
   elif [ -f "$target" ]; then
-    handle_standalone_file "$target" "${args[@]}"
+    handle_standalone_file "$@"
   else
     echo "Error: target '$target' is not a valid file or directory" >&2
     exit 1
   fi
-elif git -C "$PWD" rev-parse 2> /dev/null; then
+elif git -C "$PWD" rev-parse 2>/dev/null; then
   # No target specified, use current directory if it's a git repo
   handle_git_dir "$PWD"
 else

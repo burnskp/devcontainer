@@ -1,9 +1,0 @@
-#compdef tap
-
-_tap() {
-  local projects
-  projects=($(task _projects))
-  _describe 'projects' projects
-}
-
-_tap "$@"
