@@ -12,7 +12,6 @@ require("nvim-treesitter").install(treesitter_apps):wait(300000)
 require("nvim-treesitter").update():wait(300000)
 
 print("Sync: Mason")
-vim.cmd("Mason")
 vim.cmd("MasonUpdate")
 
 local nvim_lsp = lazy.plugins["nvim-lspconfig"]
@@ -70,14 +69,14 @@ for _, mason_app in pairs(mason_apps) do
 end
 
 local function install_mason_package(package_name)
-  print("Installing " .. package_name)
+  print("Mason: Installing " .. package_name)
   local ok, err = pcall(function()
     vim.cmd("MasonInstall " .. package_name)
   end)
   if ok then
-    print("Installed " .. package_name)
+    print("Mason: Installed " .. package_name)
   else
-    print("Failed to install " .. package_name .. ": " .. tostring(err))
+    print("Mason: Failed to install " .. package_name .. ": " .. tostring(err))
   end
 end
 
