@@ -52,7 +52,8 @@ RUN add-apt-repository universe \
   && curl -fsSL "https://deb.nodesource.com/setup_${nodeVersion}.x" | bash - \
   && apt-get update && apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/*  \
-  && ln -s "$(which fdfind)" /usr/local/bin/fd
+  && ln -s "$(which fdfind)" /usr/local/bin/fd \
+  && ln -s "$(which batcat)" /usr/local/bin/bat
 
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
   export NVIM=nvim-linux-x86_64; \
@@ -83,20 +84,25 @@ COPY config /home/ubuntu/.config
 RUN chown -R ubuntu:ubuntu /home/ubuntu \
   && chsh -s /bin/zsh ubuntu
 
+COPY start.sh /start.sh
+
 USER ubuntu
 WORKDIR /home/ubuntu
 ENV HOME="/home/ubuntu"
 ENV PATH="$PATH:/usr/local/go/bin:/nvim/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/luals/bin:$HOME/dasht/bin"
 ENV ZDOTDIR="$HOME/.config/zsh"
+RUN bat cache --build
 
 # Make Links
 RUN mkdir -p $HOME/.config $HOME/.local/share \
-  && ln -s /data/github-copilot $HOME/.config/github-copilot \
-  && ln -s /data/claude $HOME/.config/claude \
-  && ln -s /data/exercism $HOME/.config/exercism \
   && ln -s /data/bootdev.yaml $HOME/.bootdev.yaml \
+  && ln -s /data/claude $HOME/.config/claude \
   && ln -s /data/codex $HOME/.local/share/codex \
+  && ln -s /data/exercism $HOME/.config/exercism \
+  && ln -s /data/gemini $HOME/.gemini \
+  && ln -s /data/github-copilot $HOME/.config/github-copilot \
   && ln -s /data/opencode $HOME/.local/share/opencode \
+  && ln -s /data/ssh $HOME/.ssh \
   && ln -s /data/zoxide $HOME/.local/share/zoxide
 
 # Setup Neovim
@@ -104,4 +110,4 @@ RUN mkdir -p ~/.local/share/nvim
 RUN nvim --headless -c "luafile ~/.config/nvim/update.lua" -c "qall" 2>&1 \
   | tee ~/.local/share/nvim/update.log
 
-ENTRYPOINT ["nvim"]
+ENTRYPOINT ["/start.sh"]

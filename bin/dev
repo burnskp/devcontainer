@@ -2,25 +2,178 @@
 set -euo pipefail
 
 # Configuration
-readonly DATA="$HOME/.local/share/devcontainer"
+readonly DATA="${XDG_DATA_HOME}/devcontainer"
 readonly CONTAINER="ghcr.io/burnskp/containers/dev:latest"
 
-if ! docker image inspect "$CONTAINER" 2>/dev/null; then
-  echo "Image not found locally. Pulling $CONTAINER..."
-  docker pull "$CONTAINER"
-else
-  docker pull "$CONTAINER" || true
-fi
+# The image is built by GitHub Actions on:
+#   cron: 0 1 * * 0   (Sundays at 01:00)
+# We assume the build completes reasonably soon after that time.
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [OPTIONS] [TARGET] [extra args...]
+
+Options:
+  -F, --force-pull   Always docker pull the image before running
+      --skip-pull    Skip age-based pull check entirely
+  -h, --help         Show this help
+
+Behavior:
+  * By default, the script:
+      - Checks the local image creation time
+      - Computes the last scheduled build time
+      - If the image is older than the last scheduled build, it tries to pull
+        a newer one.
+      - If no newer image exists and the image is still older than the last
+        scheduled build, it warns and asks you to press Enter to continue.
+  * You can override with --force-pull or --skip-pull.
+EOF
+}
+
+# Compute the epoch time of the most recent scheduled build based on:
+#   cron: 0 1 * * 0  (Sunday at 01:00)
+get_last_scheduled_build_epoch() {
+  local now candidate last
+  now=$(date +%s)
+
+  # 'this sunday' = upcoming Sunday unless today is Sunday
+  candidate=$(date -d 'this sunday 01:00' +%s)
+
+  if ((now >= candidate)); then
+    # We are past this Sunday's 01:00 → last scheduled build = this Sunday 01:00
+    last=$candidate
+  else
+    # We are before this Sunday's 01:00 → last scheduled build = previous Sunday 01:00
+    last=$((candidate - 7 * 24 * 60 * 60))
+  fi
+
+  printf '%s\n' "$last"
+}
+
+ensure_image_freshness() {
+  local force_pull="$1"
+  local skip_pull="$2"
+
+  if ! command -v docker >/dev/null 2>&1; then
+    echo "Error: docker not found in PATH" >&2
+    exit 1
+  fi
+
+  # If user explicitly says "don't pull", honor that unless force is set.
+  if [[ "$skip_pull" == "true" && "$force_pull" == "false" ]]; then
+    return
+  fi
+
+  # If image doesn't exist locally, just pull it.
+  local created_raw image_created_ts last_build_ts before_ts after_ts
+  if ! created_raw=$(docker image inspect --format '{{.Created}}' "$CONTAINER" 2>/dev/null); then
+    echo "Local image '$CONTAINER' not found. Pulling..." >&2
+    docker pull "$CONTAINER"
+    return
+  fi
+
+  image_created_ts=$(date -d "$created_raw" +%s)
+  last_build_ts=$(get_last_scheduled_build_epoch)
+
+  if [[ "$force_pull" == "true" ]]; then
+    echo "Forcing docker pull of $CONTAINER..." >&2
+    if ! docker pull "$CONTAINER"; then
+      echo "Warning: docker pull failed; continuing with existing image." >&2
+    fi
+    return
+  fi
+
+  # If image is newer than or equal to last scheduled build, it's "fresh enough".
+  if ((image_created_ts >= last_build_ts)); then
+    return
+  fi
+
+  # Otherwise try to update it.
+  echo "Local image '$CONTAINER' is older than the last scheduled build." >&2
+  echo "Attempting to pull a newer image..." >&2
+
+  before_ts="$image_created_ts"
+
+  if ! docker pull "$CONTAINER"; then
+    echo "Warning: docker pull failed; continuing with existing image." >&2
+  fi
+
+  # Re-check the image creation time after pull.
+  created_raw=$(docker image inspect --format '{{.Created}}' "$CONTAINER" 2>/dev/null || true)
+  if [[ -n "$created_raw" ]]; then
+    after_ts=$(date -d "$created_raw" +%s)
+  else
+    after_ts="$before_ts"
+  fi
+
+  # If it's not newer, warn and require Enter (when interactive).
+  if ((after_ts <= before_ts)); then
+    local last_build_human image_human
+    last_build_human=$(date -d "@$last_build_ts")
+    image_human=$(date -d "@$image_created_ts")
+
+    echo >&2
+    echo "WARNING: No newer image for '$CONTAINER' is available." >&2
+    echo "         Local image created : $image_human" >&2
+    echo "         Last scheduled build: $last_build_human" >&2
+    echo >&2
+
+    if [[ -t 0 ]]; then
+      echo "Press Enter to continue using this image, or Ctrl+C to abort..." >&2
+      read -r _
+    else
+      echo "Non-interactive session detected; continuing without prompt." >&2
+    fi
+  fi
+}
+
+# ---- option parsing ---------------------------------------------------------
+force_pull=false
+skip_auto_pull=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  -F | --force-pull)
+    force_pull=true
+    shift
+    ;;
+  --skip-pull | --no-pull)
+    skip_auto_pull=true
+    shift
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  --)
+    shift
+    break
+    ;;
+  -*)
+    echo "Unknown option: $1" >&2
+    usage
+    exit 1
+    ;;
+  *)
+    break
+    ;;
+  esac
+done
+
+ensure_image_freshness "$force_pull" "$skip_auto_pull"
 
 if git -C "$(dirname "$(realpath "$PWD")")" rev-parse 2>/dev/null; then
   root="$(git -C "$(dirname "$(realpath "$PWD")")" rev-parse --show-toplevel)"
 else
   root="$PWD"
-  container_dir="$(basename "$root")"
 fi
 container_dir="$(basename "$root")"
 docker run --rm -it \
+  -v "$SSH_AUTH_SOCK:/ssh-agent" \
+  -e SSH_AUTH_SOCK=/ssh-agent \
+  -v "$XDG_CONFIG_HOME/git":/home/ubuntu/.config/git:ro \
   -v "$DATA:/data" \
-  -v "$root:/$container_dir" \
+  -v "$root:/work/$container_dir" \
   --entrypoint "zsh" \
+  -w "/work/$container_dir" \
   "$CONTAINER"
