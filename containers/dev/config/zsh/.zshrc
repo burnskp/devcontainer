@@ -7,6 +7,10 @@ done
 
 ZAQ_PREFIXES=('git commit -m' 'gcm' 'gcmp' 'gacmp' 'chezmoi git commit -m' 'chgcm' 'chgacmp' 'chgcmp' 'ssh( -[^ ]##)# [^ -][^ ]#' 'sshnh( -[^ ]##)# [^ -][^ ]#')
 
+source "$XDG_CONFIG_HOME/zsh/plugins/autoquoter/zsh-autoquoter.zsh"
+source "$XDG_CONFIG_HOME/zsh/plugins/autopair/autopair.zsh"
+source "$XDG_CONFIG_HOME/zsh/plugins/history-substring-search/zsh-history-substring-search.zsh"
+
 zmodload zsh/terminfo
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down

@@ -9,10 +9,7 @@ alias Grep="grep --color -i"
 alias sz="source $XDG_CONFIG_HOME/zsh/.zshrc"
 alias va='source .venv/bin/activate'
 alias vi="nvim"
-
-if [ $commands[batcat] ]; then
-  alias bat=batcat
-fi
+alias nv="nvim"
 
 alias bathelp='batcat --plain --language=help'
 alias bl="batcat --paging=never -l log"
