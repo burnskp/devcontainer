@@ -1,6 +1,6 @@
 # checkov:skip=CKV_DOCKER_2: This container doesn't need healthchecks
 # hadolint global ignore=DL3008,DL3015,DL4006
-FROM ubuntu:25.04
+FROM ubuntu:25.10
 
 ARG goVersion=1.25.4
 ARG nodeVersion=22
@@ -33,6 +33,7 @@ RUN add-apt-repository universe \
   fzf \
   git \
   glow \
+  lazygit \
   locate \
   lua5.4 \
   nodejs \
@@ -94,13 +95,14 @@ ENV ZDOTDIR="$HOME/.config/zsh"
 RUN bat cache --build
 
 # Make Links
-RUN mkdir -p $HOME/.config $HOME/.local/share \
+RUN mkdir -p $HOME/.config $HOME/.local/share $HOME/.local/state \
   && ln -s /data/bootdev.yaml $HOME/.bootdev.yaml \
   && ln -s /data/claude $HOME/.config/claude \
   && ln -s /data/codex $HOME/.local/share/codex \
   && ln -s /data/exercism $HOME/.config/exercism \
   && ln -s /data/gemini $HOME/.gemini \
   && ln -s /data/github-copilot $HOME/.config/github-copilot \
+  && ln -s /data/lazygit $HOME/.local/state/lazygit \
   && ln -s /data/opencode $HOME/.local/share/opencode \
   && ln -s /data/ssh $HOME/.ssh \
   && ln -s /data/zoxide $HOME/.local/share/zoxide
