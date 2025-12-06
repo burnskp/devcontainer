@@ -72,13 +72,15 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
   && mv ~/.local/bin/uv /usr/local/bin/uv
 
-RUN npm i -g @openai/codex \
-  && npm i -g opencode-ai \
-  && npm i -g @google/gemini-cli \
+RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git \
   && npm i -g @fission-ai/openspec@latest \
+  && npm i -g @google/gemini-cli \
+  && npm i -g @openai/codex \
   && npm i -g codemachine \
-  && npm i -g tree-sitter-cli \
-  && uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+  && npm i -g opencode-ai \
+  && npm i -g opencode-gemini-auth \
+  && npm i -g openskills \
+  && npm i -g tree-sitter-cli
 
 COPY linters/cbfmt.toml /home/ubuntu/.cbfmt.toml
 COPY config /home/ubuntu/.config
