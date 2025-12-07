@@ -73,7 +73,7 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
   && mv ~/.local/bin/uv /usr/local/bin/uv
 
 RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
-RUN npm i -g @fission-ai/openspec@latest
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g @fission-ai/openspec@latest
 RUN npm i -g @google/gemini-cli
 RUN npm i -g @openai/codex
 RUN npm i -g codemachine
