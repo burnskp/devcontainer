@@ -74,13 +74,13 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 
 RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g @fission-ai/openspec@latest
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g google/gemini-cli
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g openai/codex
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g odemachine
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g pencode-ai
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g pencode-gemini-auth
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g penskills
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g ree-sitter-cli
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g @google/gemini-cli
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g @openai/codex
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g codemachine
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g opencode-ai
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g opencode-gemini-auth
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g openskills
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g tree-sitter-cli
 
 COPY linters/cbfmt.toml /home/ubuntu/.cbfmt.toml
 COPY config /home/ubuntu/.config
