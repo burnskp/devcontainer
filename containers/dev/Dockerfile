@@ -74,13 +74,13 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 
 RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g @fission-ai/openspec@latest
-RUN npm i -g @google/gemini-cli
-RUN npm i -g @openai/codex
-RUN npm i -g codemachine
-RUN npm i -g opencode-ai
-RUN npm i -g opencode-gemini-auth
-RUN npm i -g openskills
-RUN npm i -g tree-sitter-cli
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g google/gemini-cli
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g openai/codex
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g odemachine
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g pencode-ai
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g pencode-gemini-auth
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g penskills
+RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g ree-sitter-cli
 
 COPY linters/cbfmt.toml /home/ubuntu/.cbfmt.toml
 COPY config /home/ubuntu/.config
