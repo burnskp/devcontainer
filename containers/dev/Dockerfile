@@ -72,15 +72,7 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
   && mv ~/.local/bin/uv /usr/local/bin/uv
 
-RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g @fission-ai/openspec@latest
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g @google/gemini-cli
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g @openai/codex
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g codemachine
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g opencode-ai
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g opencode-gemini-auth
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g openskills
-RUN node /usr/lib/node_modules/npm/bin/npm-cli.js i -g tree-sitter-cli
+RUN npm i -g bun
 
 COPY linters/cbfmt.toml /home/ubuntu/.cbfmt.toml
 COPY config /home/ubuntu/.config
@@ -92,9 +84,19 @@ COPY start.sh /start.sh
 USER ubuntu
 WORKDIR /home/ubuntu
 ENV HOME="/home/ubuntu"
-ENV PATH="$PATH:/usr/local/go/bin:/nvim/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/luals/bin:$HOME/dasht/bin"
+ENV PATH="$PATH:/usr/local/go/bin:/nvim/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.local/node/bin:$HOME/.local/bun/bin"
 ENV ZDOTDIR="$HOME/.config/zsh"
 RUN bat cache --build
+
+RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+RUN bun add -g @fission-ai/openspec@latest
+RUN bun add -g @google/gemini-cli
+RUN bun add -g @openai/codex
+RUN bun add -g codemachine
+RUN bun add -g opencode-ai
+RUN bun add -g opencode-gemini-auth
+RUN bun add -g openskills
+RUN bun add -g tree-sitter-cli
 
 # Make Links
 RUN mkdir -p $HOME/.config $HOME/.local/share $HOME/.local/state \
