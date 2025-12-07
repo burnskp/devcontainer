@@ -1,5 +1,5 @@
 # checkov:skip=CKV_DOCKER_2: This container doesn't need healthchecks
-# hadolint global ignore=DL3008,DL3015,DL4006
+# hadolint global ignore=DL3008,DL3015,DL3059,DL4006
 FROM ubuntu:25.10
 
 ARG goVersion=1.25.4
@@ -72,15 +72,15 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
   && mv ~/.local/bin/uv /usr/local/bin/uv
 
-RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git \
-  && npm i -g @fission-ai/openspec@latest \
-  && npm i -g @google/gemini-cli \
-  && npm i -g @openai/codex \
-  && npm i -g codemachine \
-  && npm i -g opencode-ai \
-  && npm i -g opencode-gemini-auth \
-  && npm i -g openskills \
-  && npm i -g tree-sitter-cli
+RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+RUN npm i -g @fission-ai/openspec@latest
+RUN npm i -g @google/gemini-cli
+RUN npm i -g @openai/codex
+RUN npm i -g codemachine
+RUN npm i -g opencode-ai
+RUN npm i -g opencode-gemini-auth
+RUN npm i -g openskills
+RUN npm i -g tree-sitter-cli
 
 COPY linters/cbfmt.toml /home/ubuntu/.cbfmt.toml
 COPY config /home/ubuntu/.config
