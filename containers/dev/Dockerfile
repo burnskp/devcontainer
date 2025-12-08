@@ -72,7 +72,6 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
   && mv ~/.local/bin/uv /usr/local/bin/uv
 
-RUN npm i -g bun
 
 COPY linters/cbfmt.toml /home/ubuntu/.cbfmt.toml
 COPY config /home/ubuntu/.config
@@ -84,10 +83,11 @@ COPY start.sh /start.sh
 USER ubuntu
 WORKDIR /home/ubuntu
 ENV HOME="/home/ubuntu"
-ENV PATH="$PATH:/usr/local/go/bin:/nvim/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.local/node/bin:$HOME/.local/bun/bin"
+ENV PATH="$PATH:/usr/local/go/bin:/nvim/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.local/node/bin:$HOME/.local/bun/bin:$HOME/.bun/bin"
 ENV ZDOTDIR="$HOME/.config/zsh"
 RUN bat cache --build
 
+RUN curl -fsSL https://bun.sh/install | bash
 RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 RUN bun add -g @fission-ai/openspec@latest
 RUN bun add -g @google/gemini-cli

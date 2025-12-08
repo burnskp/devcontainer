@@ -47,6 +47,7 @@ export GOBIN=$GOPATH/bin
 
 check_paths=("${GOBIN}")
 check_paths+="/nvim/bin"
+check_paths+="${HOME}/.bun/bin"
 check_paths+="${HOME}/.cargo/bin"
 check_paths+="${HOME}/.local/bin"
 check_paths+="${HOME}/.local/share/bun/bin"
