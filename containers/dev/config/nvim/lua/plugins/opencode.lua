@@ -1,4 +1,4 @@
-{
+return {
   "NickvanDyke/opencode.nvim",
   dependencies = {
     ---@module 'snacks'
