@@ -22,7 +22,7 @@ setopt nonomatch
 setopt noshwordsplit
 setopt prompt_subst
 
-export BAT_THEME="catppuccin-latte"
+export BAT_THEME="Catppuccin Latte"
 export GLAMOUR_STYLE="$HOME/.config/glamour/catppuccin-latte.json"
 export EDITOR="nvim"
 export LESS=-R

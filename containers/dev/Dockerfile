@@ -32,6 +32,7 @@ RUN add-apt-repository universe \
   fd-find \
   fzf \
   git \
+  git-delta \
   glow \
   lazygit \
   locate \
@@ -72,6 +73,9 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
   && mv ~/.local/bin/uv /usr/local/bin/uv
 
+RUN curl -sLo /tmp/bat-extras.zip https://github.com/eth-p/bat-extras/releases/download/v2024.08.24/bat-extras-2024.08.24.zip \
+  && unzip -d /usr/local /tmp/bat-extras.zip \
+  && rm /tmp/bat-extras.zip
 
 COPY linters/cbfmt.toml /home/ubuntu/.cbfmt.toml
 COPY config /home/ubuntu/.config
