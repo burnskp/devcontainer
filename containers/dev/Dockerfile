@@ -47,7 +47,6 @@ RUN add-apt-repository universe \
   sqlite3 \
   starship \
   tmux \
-  w3m \
   wget \
   zoxide \
   zsh \
@@ -93,10 +92,8 @@ RUN bat cache --build
 
 RUN curl -fsSL https://bun.sh/install | bash
 RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
-RUN bun add -g @fission-ai/openspec@latest
 RUN bun add -g @github/copilot
 RUN bun add -g @google/gemini-cli
-RUN bun add -g @openai/codex
 RUN bun add -g codemachine
 RUN bun add -g opencode-ai
 RUN bun add -g opencode-gemini-auth
@@ -106,8 +103,6 @@ RUN bun add -g tree-sitter-cli
 # Make Links
 RUN mkdir -p $HOME/.config $HOME/.local/share $HOME/.local/state \
   && ln -s /data/bootdev.yaml $HOME/.bootdev.yaml \
-  && ln -s /data/claude $HOME/.config/claude \
-  && ln -s /data/codex $HOME/.local/share/codex \
   && ln -s /data/copilot $HOME/.config/.copilot \
   && ln -s /data/exercism $HOME/.config/exercism \
   && ln -s /data/gemini $HOME/.gemini \
