@@ -1,0 +1,25 @@
+name: trigger build
+on:
+  schedule:
+  - cron: 0 1 * * 0
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  dev:
+    name: dev
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+  build-and-push-image:
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    uses: ./.github/workflows/publish.yaml
+    with:
+      dockerfile: Dockerfile
+      name: dev

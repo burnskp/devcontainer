@@ -3,7 +3,7 @@ vim.pack.add({
  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = 'main' },
 }, { confirm = false })
 
-require("nvim-treesitter").install({
+local parsers = {
   "bash",
   "diff",
   "dockerfile",
@@ -35,4 +35,6 @@ require("nvim-treesitter").install({
   "vimdoc",
   "xml",
   "yaml",
-})
+}
+
+require("nvim-treesitter").install(parsers):wait(300000)

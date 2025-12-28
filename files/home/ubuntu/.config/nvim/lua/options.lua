@@ -1,7 +1,6 @@
 vim.g.autoformat = true
 vim.g.mapleader = " "
 
-vim.opt.laststatus = 3
 vim.opt.autoindent = true
 vim.opt.autowrite = true
 vim.opt.clipboard = ""
@@ -12,14 +11,10 @@ vim.opt.hlsearch = false
 vim.opt.ignorecase = true
 vim.opt.incsearch = true
 vim.opt.joinspaces = false
-vim.opt.linebreak = true
+vim.opt.laststatus = 3
 vim.opt.linebreak = true
 vim.opt.mouse = ""
-vim.opt.number = true
-vim.opt.title = true
-vim.opt.titlestring = "n:%t"
-vim.opt.wrap = true
-vim.opt.relativenumber = true
+vim.opt.number = false
 vim.opt.scrolloff = 5
 vim.opt.shiftround = true
 vim.opt.shiftwidth = 2
@@ -34,6 +29,7 @@ vim.opt.spelllang = "en_us"
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.tabstop = 2
+vim.opt.titlestring = "n:%t"
 vim.opt.title = true
 vim.opt.updatetime = 50
 vim.opt.wildmode = { "list", "longest" }
@@ -41,7 +37,6 @@ vim.opt.wrap = true
 
 -- Set backup options
 vim.opt.backup = false
-vim.opt.backupdir = vim.fn.stdpath("config") .. "/.backup"
 vim.opt.backupdir = vim.fn.expand("~/.cache/nvim/backup")
 vim.opt.writebackup = false
 

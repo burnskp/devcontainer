@@ -5,6 +5,9 @@ on:
       dockerfile:
         required: true
         type: string
+      name:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       dockerfile:
@@ -23,14 +26,6 @@ jobs:
       attestations: write
       id-token: write
     steps:
-    - name: Get container info
-      id: container
-      env:
-        dockerfile: ${{ env.DOCKERFILE }}
-      run: |
-        name=$(echo "$dockerfile" | cut -d/ -f2)
-        echo "name=${name}" >> "$GITHUB_OUTPUT"
-        echo "context=./${dockerfile%%/Dockerfile}" >> "$GITHUB_OUTPUT"
     - name: Checkout repository
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5.0.1
       with:
@@ -45,7 +40,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@318604b99e75e41977312d83839a89be02ca4893
       with:
-        images: ${{ env.REGISTRY }}/${{ steps.container.outputs.name }}
+        images: ${{ env.REGISTRY }}/${{ inputs.name }}
         tags: |
           type=raw,value=latest,enable={{is_default_branch}}
           type=raw,value={{date 'YYYYMMDD-HHmmss'}}-{{sha}}
@@ -56,7 +51,7 @@ jobs:
       uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
       with:
         platforms: linux/amd64,linux/arm64
-        context: ${{ steps.container.outputs.context }}
+        context: ${{ inputs.dockerfile }}
         provenance: mode=max
         sbom: true
         push: true

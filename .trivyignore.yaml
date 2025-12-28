@@ -1,5 +1,0 @@
-vulnerabilities:
-  - id: AVD-DS-0026
-    statement: Don't need healthchecks for local dev containers
-  - id: AVD-DS-0029
-    statement: We want the recommendations for local dev containers
