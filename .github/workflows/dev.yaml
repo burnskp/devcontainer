@@ -8,12 +8,6 @@ on:
       - main
 jobs:
   dev:
-    name: dev
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-  build-and-push-image:
     permissions:
       contents: read
       packages: write
