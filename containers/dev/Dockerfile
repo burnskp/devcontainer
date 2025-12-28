@@ -5,22 +5,20 @@ FROM ubuntu:25.10
 ARG goVersion=1.25.4
 ARG nodeVersion=22
 ARG TARGETARCH
-ENV GOOS=linux
-ENV GOARCH=${TARGETARCH}
 
+ENV BUN_INSTALL="/usr/local"
 ENV DEBIAN_FRONTEND=noninteractive
-# Set the locale
-RUN apt-get update && apt-get -y install locales software-properties-common \
-  && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
-  && dpkg-reconfigure locales \
-  && update-locale LANG=en_US.UTF-8 \
-  && rm -rf /var/lib/apt/lists/*
-
+ENV GOARCH=${TARGETARCH}
+ENV GOOS=linux
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-RUN add-apt-repository universe \
+RUN apt-get update && apt-get -y install locales software-properties-common \
+  && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+  && dpkg-reconfigure locales \
+  && update-locale LANG=en_US.UTF-8 \
+  && add-apt-repository universe \
   && apt-get update \
   && apt-get full-upgrade -y \
   && apt-get install -y \
@@ -54,54 +52,49 @@ RUN add-apt-repository universe \
   && apt-get update && apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/*  \
   && ln -s "$(which fdfind)" /usr/local/bin/fd \
-  && ln -s "$(which batcat)" /usr/local/bin/bat
-
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
+  && ln -s "$(which batcat)" /usr/local/bin/bat \
+  && if [ "$TARGETARCH" = "amd64" ]; then \
   export NVIM=nvim-linux-x86_64; \
+  export BUN=bun-linux-x64; \
   else \
   export NVIM="nvim-linux-${TARGETARCH}"; \
+  export BUN="bun-linux-${TARGETARCH}"; \
   fi \
-  && curl -L https://github.com/neovim/neovim/releases/latest/download/$NVIM.tar.gz -o nvim.tgz \
+  && curl -L https://github.com/neovim/neovim/releases/download/nightly/$NVIM.tar.gz -o nvim.tgz \
   && tar xf /nvim.tgz \
   && rm /nvim.tgz \
   && mv /$NVIM /nvim \
   && curl -sLo /go.tgz https://go.dev/dl/go${goVersion}.linux-${TARGETARCH}.tar.gz \
   && tar -C /usr/local -xf /go.tgz \
-  && rm /go.tgz
-
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
-  && mv ~/.local/bin/uv /usr/local/bin/uv
-
-RUN curl -sLo /tmp/bat-extras.zip https://github.com/eth-p/bat-extras/releases/download/v2024.08.24/bat-extras-2024.08.24.zip \
+  && rm /go.tgz \
+  && curl -LsSf https://astral.sh/uv/install.sh | sh \
+  && mv ~/.local/bin/uv /usr/local/bin/uv \
+  && curl -sLo /tmp/bat-extras.zip https://github.com/eth-p/bat-extras/releases/download/v2024.08.24/bat-extras-2024.08.24.zip \
   && unzip -d /usr/local /tmp/bat-extras.zip \
-  && rm /tmp/bat-extras.zip
+  && rm /tmp/bat-extras.zip \
+  && curl -sLo /tmp/bun.zip https://github.com/oven-sh/bun/releases/latest/download/$BUN.zip \
+  && unzip /tmp/bun.zip \ 
+  && mv $BUN/bun /usr/local/bin \
+  && chmod +x /usr/local/bin/bun \
+  && rmdir $BUN \
+  && rm /tmp/bun.zip \
+  && bun add -g @github/copilot-language-server \
+  && bun add -g opencode-ai \
+  && bun add -g tree-sitter-cli \
+  && rm -rf /root /usr/local/install/cache 
 
-COPY linters/cbfmt.toml /home/ubuntu/.cbfmt.toml
-COPY config /home/ubuntu/.config
+COPY files /
 RUN chown -R ubuntu:ubuntu /home/ubuntu \
   && chsh -s /bin/zsh ubuntu
-
-COPY start.sh /start.sh
 
 USER ubuntu
 WORKDIR /home/ubuntu
 ENV HOME="/home/ubuntu"
 ENV PATH="$PATH:/usr/local/go/bin:/nvim/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.local/node/bin:$HOME/.local/bun/bin:$HOME/.bun/bin"
 ENV ZDOTDIR="$HOME/.config/zsh"
-RUN bat cache --build
 
-RUN curl -fsSL https://bun.sh/install | bash
-RUN uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
-RUN bun add -g @github/copilot
-RUN bun add -g @google/gemini-cli
-RUN bun add -g codemachine
-RUN bun add -g opencode-ai
-RUN bun add -g opencode-gemini-auth
-RUN bun add -g openskills
-RUN bun add -g tree-sitter-cli
-
-# Make Links
-RUN mkdir -p $HOME/.config $HOME/.local/share $HOME/.local/state \
+RUN bat cache --build \
+  && mkdir -p $HOME/.config $HOME/.local/share $HOME/.local/state \
   && ln -s /data/bootdev.yaml $HOME/.bootdev.yaml \
   && ln -s /data/copilot $HOME/.config/.copilot \
   && ln -s /data/exercism $HOME/.config/exercism \
@@ -110,11 +103,9 @@ RUN mkdir -p $HOME/.config $HOME/.local/share $HOME/.local/state \
   && ln -s /data/lazygit $HOME/.local/state/lazygit \
   && ln -s /data/opencode $HOME/.local/share/opencode \
   && ln -s /data/ssh $HOME/.ssh \
-  && ln -s /data/zoxide $HOME/.local/share/zoxide
-
-# Setup Neovim
-RUN mkdir -p ~/.local/share/nvim
-RUN nvim --headless -c "luafile ~/.config/nvim/update.lua" -c "qall" 2>&1 \
+  && ln -s /data/zoxide $HOME/.local/share/zoxide \
+  && mkdir -p ~/.local/share/nvim \
+  && nvim --headless -c "luafile ~/.config/nvim/update.lua" -c "qall" 2>&1 \
   | tee ~/.local/share/nvim/update.log
 
 ENTRYPOINT ["/start.sh"]
