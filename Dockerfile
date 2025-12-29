@@ -57,6 +57,7 @@ RUN add-apt-repository -y universe \
   && apt-get autoremove -y \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/man/* \
+  && chsh -s /bin/zsh ubuntu \
   && ln -s "$(which fdfind)" /usr/local/bin/fd \
   && ln -s "$(which batcat)" /usr/local/bin/bat
 
@@ -94,9 +95,7 @@ RUN LUA_VERSION=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server
     && rm /tmp/lua-ls.tar.gz
 
 COPY start.sh /start.sh
-COPY config /home/ubuntu/.config
-RUN chown -R ubuntu:ubuntu /home/ubuntu \
-  && chsh -s /bin/zsh ubuntu
+COPY --chown=ubuntu:ubuntu config /home/ubuntu/.config
 
 USER ubuntu
 WORKDIR /home/ubuntu
@@ -108,7 +107,7 @@ RUN bat cache --build
 RUN mkdir -p $HOME/.config $HOME/.local/share/nvim $HOME/.local/state \
   && ln -s /data/lazygit $HOME/.local/state/lazygit \
   && ln -s /data/opencode $HOME/.local/share/opencode \
-  && nvim --headless -c "luafile ~/.config/nvim/update.lua" -c "qall" 2>&1 \
+  && nvim --headless -c "qall" 2>&1 \
   | tee ~/.local/share/nvim/update.log
 
 ENTRYPOINT ["/start.sh"]
