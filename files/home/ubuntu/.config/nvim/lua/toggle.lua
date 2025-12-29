@@ -39,7 +39,8 @@ local function toggle_or_seek(key)
     end
     
   else
-    vim.cmd("normal! " .. vim.v.count1 .. key)
+    local termcode = vim.api.nvim_replace_termcodes(key, true, false, true)
+    vim.api.nvim_feedkeys(vim.v.count1 .. termcode, 'n', false)
   end
 end
 
