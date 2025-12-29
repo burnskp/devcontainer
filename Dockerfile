@@ -13,77 +13,102 @@ ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 ENV NONINTERACTIVE=1
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  locales software-properties-common \
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+COPY --from=golangci/golangci-lint:latest /usr/bin/golangci-lint /usr/local/bin/golangci-lint
+COPY --from=oven/bun:latest /usr/local/bin/bun /usr/local/bin/bun
+
+RUN apt-get update && apt-get -y install locales software-properties-common \
   && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
   && dpkg-reconfigure locales \
   && update-locale LANG=en_US.UTF-8 \
+  && apt-get autoremove -y \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/man/* 
+
+RUN add-apt-repository -y universe \
+  && add-apt-repository -y ppa:longsleep/golang-backports \
+  && curl -fsSL "https://deb.nodesource.com/setup_24.x" | bash - \
+  && apt-get update \
   && apt-get full-upgrade -y \
-  && apt-get install -y --no-install-recommends \
+  && apt-get install -y \
+  bat \
   build-essential \
   curl \
+  fd-find \
+  fzf \
   git \
-  procps \
-  sudo \
+  git-delta \
+  glow \
+  golang-go \
+  lazygit \
+  lua5.4 \
+  nodejs \
+  python3 \
+  python3-pip \
+  python3-venv \
+  ripgrep \
+  shellcheck \
+  shfmt \
+  sqlite3 \
+  starship \
+  unzip \
+  wget \
   zsh \
-  && echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ubuntu \
-  && su ubuntu -c 'bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"' \
-  && rm /etc/sudoers.d/ubuntu \
-  && SUDO_FORCE_REMOVE=yes apt-get purge -y sudo \
   && apt-get autoremove -y \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/man/* \
-  && if [ "$TARGETARCH" = "amd64" ]; then \
+  && ln -s "$(which fdfind)" /usr/local/bin/fd \
+  && ln -s "$(which batcat)" /usr/local/bin/bat
+
+ RUN if [ "$TARGETARCH" = "amd64" ]; then \
   export NVIM=nvim-linux-x86_64; \
   else \
   export NVIM="nvim-linux-${TARGETARCH}"; \
   fi \
-  && curl -L https://github.com/neovim/neovim/releases/download/nightly/$NVIM.tar.gz -o nvim.tgz \
-  && tar -xf /nvim.tgz --strip-components=1 -C /usr/local \
-  && rm /nvim.tgz
+  && curl -L https://github.com/neovim/neovim/releases/download/nightly/$NVIM.tar.gz -o /tmp/nvim.tgz \
+  && tar -xf /tmp/nvim.tgz --strip-components=1 -C /usr/local \
+  && rm /tmp/nvim.tgz
 
-COPY files /
+RUN bun add --no-cache -g @github/copilot-language-server \
+  && bun add --no-cache -g markdownlint-cli2 \
+  && bun add --no-cache -g opencode-ai \
+  && bun add --no-cache -g vscode-json-languageservice \
+  && bun add --no-cache -g yaml-language-server
+
+RUN GOBIN=/usr/local/bin go install golang.org/x/tools/gopls@latest \
+  && rm -rf /go/pkg /root/.cache/go-build
+
+RUN UV_TOOL_BIN_DIR=/usr/local/bin uv tool install ruff \ 
+  && UV_TOOL_BIN_DIR=/usr/local/bin uv tool install pre-commit 
+
+RUN LUA_VERSION=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest | grep -Po '"tag_name": "\K.*?(?=")') \
+    && if [ "$TARGETARCH" = "amd64" ]; then \
+         LUA_ARCH="linux-x64"; \
+       else \
+         LUA_ARCH="linux-arm64"; \
+       fi \
+    && curl -L https://github.com/LuaLS/lua-language-server/releases/download/${LUA_VERSION}/lua-language-server-${LUA_VERSION}-${LUA_ARCH}.tar.gz -o /tmp/lua-ls.tar.gz \
+    && mkdir -p /opt/lua-language-server \
+    && tar -xvf /tmp/lua-ls.tar.gz -C /opt/lua-language-server \
+    && ln -s /opt/lua-language-server/bin/lua-language-server /usr/local/bin/lua-language-server \
+    && rm /tmp/lua-ls.tar.gz
+
+COPY start.sh /start.sh
+COPY config /home/ubuntu/.config
 RUN chown -R ubuntu:ubuntu /home/ubuntu \
   && chsh -s /bin/zsh ubuntu
 
 USER ubuntu
 WORKDIR /home/ubuntu
-ENV ZDOTDIR="/home/ubuntu/.config/zsh"
+ENV HOME="/home/ubuntu"
+ENV ZDOTDIR="$HOME/.config/zsh"
+RUN bat cache --build
 
-RUN eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" \
-  && brew install \
-  bat \
-  cbfmt \
-  fd \
-  git-delta \
-  glow \
-  gnupg \
-  go \
-  golangci-lint \
-  gopls \
-  jq \
-  lazygit \
-  lua-language-server \
-  markdownlint-cli2 \
-  node \
-  opencode \
-  pre-commit \
-  ripgrep \
-  ruff \
-  shellcheck \
-  shfmt \
-  starship \
-  tree-sitter-cli \
-  uv \
-  wget \
-  yaml-language-server \
-  yq \
-  && brew cleanup --prune=all \
-  && npm install --no-cache -g @github/copilot-language-server \
-  && npm install --no-cache -g vscode-json-languageservice
-
-RUN mkdir -p $HOME/.config $HOME/.local/state $HOME/.local/share/nvim \
+# Make Links
+RUN mkdir -p $HOME/.config $HOME/.local/share/nvim $HOME/.local/state \
+  && ln -s /data/lazygit $HOME/.local/state/lazygit \
   && ln -s /data/opencode $HOME/.local/share/opencode \
-  && nvim --headless -c "qall"
+  && nvim --headless -c "luafile ~/.config/nvim/update.lua" -c "qall" 2>&1 \
+  | tee ~/.local/share/nvim/update.log
 
 ENTRYPOINT ["/start.sh"]

@@ -6,7 +6,7 @@ require("conform").setup({
   formatters_by_ft = {
     ["_"] = { "trim_whitespace" },
     lua = { "stylua" },
-    markdown = { "cbfmt", "markdownlint" },
+    markdown = { "markdownlint-cli2" },
     python = { "ruff_format" },
     sh = { "shfmt" },
     zsh = { "shfmt" },

@@ -1,7 +1,6 @@
 #!/bin/zsh
 umask 022
 
-
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_STATE_HOME="$HOME/.local/state"
@@ -10,8 +9,6 @@ export XDG_CACHE_HOME="$HOME/.cache"
 if ! [ -d "$XDG_STATE_HOME/zsh" ]; then
   mkdir -p $XDG_STATE_HOME/zsh
 fi
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 set -o noclobber
 setopt nobeep
