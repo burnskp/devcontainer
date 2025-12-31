@@ -4,7 +4,6 @@ FROM ubuntu:25.10
 
 ARG TARGETARCH
 
-ENV BUN_INSTALL="/usr/local"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GOARCH=${TARGETARCH}
 ENV GOOS=linux
@@ -70,7 +69,8 @@ RUN add-apt-repository -y universe \
   && tar -xf /tmp/nvim.tgz --strip-components=1 -C /usr/local \
   && rm /tmp/nvim.tgz
 
-RUN bun add --no-cache -g @github/copilot-language-server \
+RUN export BUN_INSTALL="/usr/local" \
+  && bun add --no-cache -g @github/copilot-language-server \
   && bun add --no-cache -g markdownlint-cli2 \
   && bun add --no-cache -g opencode-ai \
   && bun add --no-cache -g tree-sitter-cli \
@@ -106,8 +106,11 @@ RUN bat cache --build
 
 # Make Links
 RUN mkdir -p $HOME/.config $HOME/.local/share/nvim $HOME/.local/state \
-  && ln -s /data/lazygit $HOME/.local/state/lazygit \
+  && opencode models \
+  && rm -rf $HOME/.local/share/opencode \
   && ln -s /data/opencode $HOME/.local/share/opencode \
+  && ln -s /data/lazygit $HOME/.local/state/lazygit \
+  && ln -s /data/github-copilot $HOME/.config/github-copilot \
   && nvim --headless -c "qall" 2>&1 \
   | tee ~/.local/share/nvim/update.log
 
