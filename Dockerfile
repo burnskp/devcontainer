@@ -60,7 +60,7 @@ RUN add-apt-repository -y universe \
   && ln -s "$(which fdfind)" /usr/local/bin/fd \
   && ln -s "$(which batcat)" /usr/local/bin/bat
 
- RUN if [ "$TARGETARCH" = "amd64" ]; then \
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
   export NVIM=nvim-linux-x86_64; \
   else \
   export NVIM="nvim-linux-${TARGETARCH}"; \
@@ -68,6 +68,10 @@ RUN add-apt-repository -y universe \
   && curl -L https://github.com/neovim/neovim/releases/download/nightly/$NVIM.tar.gz -o /tmp/nvim.tgz \
   && tar -xf /tmp/nvim.tgz --strip-components=1 -C /usr/local \
   && rm /tmp/nvim.tgz
+
+RUN curl -sLo /tmp/bat-extras.zip https://github.com/eth-p/bat-extras/releases/download/v2024.08.24/bat-extras-2024.08.24.zip \
+  && unzip -d /usr/local /tmp/bat-extras.zip \
+  && rm /tmp/bat-extras.zip
 
 RUN export BUN_INSTALL="/usr/local" \
   && bun add --no-cache -g @github/copilot-language-server \
