@@ -73,6 +73,7 @@ RUN add-apt-repository -y universe \
 RUN bun add --no-cache -g @github/copilot-language-server \
   && bun add --no-cache -g markdownlint-cli2 \
   && bun add --no-cache -g opencode-ai \
+  && bun add --no-cache -g tree-sitter-cli \
   && bun add --no-cache -g vscode-json-languageservice \
   && bun add --no-cache -g yaml-language-server
 
