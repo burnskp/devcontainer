@@ -1,9 +1,6 @@
-vim.pack.add({
-  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range('~1') },
-}, { confirm = false })
-
 require("blink.cmp").setup({
   completion = {
+    documentation = { auto_show = false },
     list = {
       selection = {
         preselect = function()
@@ -23,12 +20,16 @@ require("blink.cmp").setup({
       function() -- sidekick next edit suggestion
         return require("sidekick").nes_jump_or_apply()
       end,
-      function() -- if you are using Neovim's native inline completions
+      function()
         return vim.lsp.inline_completion.get()
       end,
       'fallback'
     },
     ["<C-k>"] = { "show", "show_documentation", "hide_documentation" },
     ["<C-s>"] = { "show_signature", "hide_signature", "fallback" },
+  },
+  signature = { enabled = true },
+  sources = {
+    default = { 'snippets', 'lsp', 'path', 'buffer' },
   },
 })

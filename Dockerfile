@@ -13,10 +13,14 @@ ENV LC_ALL=en_US.UTF-8
 ENV NONINTERACTIVE=1
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+COPY --from=ghcr.io/terraform-linters/tflint /usr/local/bin/tflint /usr/local/bin/tflint
 COPY --from=golangci/golangci-lint:latest /usr/bin/golangci-lint /usr/local/bin/golangci-lint
+COPY --from=hashicorp/terraform:latest /bin/terraform /local/bin/terraform
+COPY --from=johnnymorganz/stylua:latest /stylua /usr/bin/stylua
 COPY --from=oven/bun:latest /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=rust:latest /usr/local/cargo/bin/ /usr/local/bin/
 
-RUN apt-get update && apt-get -y install locales software-properties-common \
+RUN apt-get update && apt-get -y install curl locales software-properties-common \
   && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
   && dpkg-reconfigure locales \
   && update-locale LANG=en_US.UTF-8 \
@@ -27,12 +31,13 @@ RUN apt-get update && apt-get -y install locales software-properties-common \
 RUN add-apt-repository -y universe \
   && add-apt-repository -y ppa:longsleep/golang-backports \
   && curl -fsSL "https://deb.nodesource.com/setup_24.x" | bash - \
+  && curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \ 
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com noble main" > /etc/apt/sources.list.d/hashicorp.list \
   && apt-get update \
   && apt-get full-upgrade -y \
   && apt-get install -y \
   bat \
   build-essential \
-  curl \
   fd-find \
   fzf \
   git \
@@ -40,6 +45,7 @@ RUN add-apt-repository -y universe \
   glow \
   golang-go \
   lazygit \
+  libicu76 \
   lua5.4 \
   nodejs \
   python3 \
@@ -50,6 +56,8 @@ RUN add-apt-repository -y universe \
   shfmt \
   sqlite3 \
   starship \
+  terraform \
+  terraform-ls \
   unzip \
   wget \
   zsh \
@@ -74,14 +82,20 @@ RUN curl -sLo /tmp/bat-extras.zip https://github.com/eth-p/bat-extras/releases/d
   && rm /tmp/bat-extras.zip
 
 RUN export BUN_INSTALL="/usr/local" \
+  && bun add --no-cache -g @actions/languageserver \
+  && bun add --no-cache -g @biomejs/biome \
   && bun add --no-cache -g @github/copilot-language-server \
   && bun add --no-cache -g markdownlint-cli2 \
   && bun add --no-cache -g opencode-ai \
+  && bun add --no-cache -g pyright \
   && bun add --no-cache -g tree-sitter-cli \
   && bun add --no-cache -g vscode-json-languageservice \
-  && bun add --no-cache -g yaml-language-server
+  && bun add --no-cache -g yaml-language-server 
 
-RUN GOBIN=/usr/local/bin go install golang.org/x/tools/gopls@latest \
+RUN export GOBIN=/usr/local/bin \
+  && go install github.com/docker/docker-language-server/cmd/docker-language-server@latest \
+  && go install github.com/nametake/golangci-lint-langserver@latest \
+  && go install golang.org/x/tools/gopls@latest \
   && rm -rf /go/pkg /root/.cache/go-build
 
 RUN UV_TOOL_BIN_DIR=/usr/local/bin uv tool install ruff \ 
@@ -96,8 +110,17 @@ RUN LUA_VERSION=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server
     && curl -L https://github.com/LuaLS/lua-language-server/releases/download/${LUA_VERSION}/lua-language-server-${LUA_VERSION}-${LUA_ARCH}.tar.gz -o /tmp/lua-ls.tar.gz \
     && mkdir -p /opt/lua-language-server \
     && tar -xvf /tmp/lua-ls.tar.gz -C /opt/lua-language-server \
-    && ln -s /opt/lua-language-server/bin/lua-language-server /usr/local/bin/lua-language-server \
+    && echo '#!/bin/bash\nexec "/opt/lua-language-server/bin/lua-language-server" "$@"' > /usr/local/bin/lua-language-server \
+    && chmod +x /usr/local/bin/lua-language-server \
     && rm /tmp/lua-ls.tar.gz
+
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+         MARKSMAN_ARCH="linux-x64"; \
+       else \
+         MARKSMAN_ARCH="linux-arm64"; \
+       fi \
+    && curl -Lo /usr/local/bin/marksman https://github.com/artempyanykh/marksman/releases/latest/download/marksman-${MARKSMAN_ARCH} \
+    && chmod +x /usr/local/bin/marksman
 
 COPY start.sh /start.sh
 COPY --chown=ubuntu:ubuntu config /home/ubuntu/.config
@@ -115,7 +138,10 @@ RUN mkdir -p $HOME/.config $HOME/.local/share/nvim $HOME/.local/state \
   && ln -s /data/opencode $HOME/.local/share/opencode \
   && ln -s /data/lazygit $HOME/.local/state/lazygit \
   && ln -s /data/github-copilot $HOME/.config/github-copilot \
-  && nvim --headless -c "qall" 2>&1 \
+  && nvim --headless -c "lua require('blink.cmp.fuzzy.download').ensure_downloaded(function(err) if err then print(err) end end)" -c "qall" 2>&1 \
   | tee ~/.local/share/nvim/update.log
+
+RUN cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
+  && cargo build --release
 
 ENTRYPOINT ["/start.sh"]

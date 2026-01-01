@@ -1,19 +1,21 @@
+require("pack")
 require("options")
 
-require("plugins.colorscheme")
 require("plugins.treesitter")
+require("plugins.noice")
+require("plugins.which-key")
 require("plugins.blink-cmp")
+require("plugins.focus")
+require("plugins.snacks")
 
 require("plugins.lsp")
 require("plugins.conform")
 require("plugins.nvim-lint")
 
 require("plugins.comment")
-require("plugins.diffview")
 require("plugins.gitsigns")
 require("plugins.nvim-surround")
 require("plugins.sidekick")
-require("plugins.snacks")
 
 require("plugins.lualine")
 

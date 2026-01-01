@@ -1,8 +1,3 @@
-vim.pack.add({
-  "https://github.com/nvim-treesitter/nvim-treesitter-context",
- { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = 'main' },
-}, { confirm = false })
-
 local parsers = {
   "bash",
   "diff",
@@ -18,9 +13,11 @@ local parsers = {
   "gotmpl",
   "hcl",
   "helm",
+  "html",
   "json",
   "json5",
   "jsonc",
+  "latex",
   "lua",
   "luadoc",
   "make",
@@ -28,6 +25,7 @@ local parsers = {
   "markdown_inline",
   "python",
   "regex",
+  "rust",
   "ssh_config",
   "terraform",
   "toml",

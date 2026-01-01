@@ -1,8 +1,3 @@
-vim.pack.add({
-  "https://github.com/folke/snacks.nvim",
-}, { confirm = false })
-
-
 require("snacks").setup({
   bigfile = { enabled = true },
   dashboard = {

@@ -51,3 +51,5 @@ vim.g.loaded_ruby_provider = 0
 vim.g.editorconfig = {}
 vim.g.editorconfig.trim_trailing_whitespace = true
 vim.g.editorconfig.tab_width = 2
+
+vim.cmd.colorscheme "catppuccin-latte"
