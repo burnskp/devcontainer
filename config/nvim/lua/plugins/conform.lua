@@ -1,6 +1,5 @@
 require("conform").setup({
   formatters_by_ft = {
-    ["_"] = { "trim_whitespace" },
     markdown = { "markdownlint-cli2" },
     sh = { "shfmt" },
     zsh = { "shfmt" },
