@@ -1,4 +1,8 @@
 require("blink.cmp").setup({
+  cmdline = {
+    keymap = { preset = "inherit" },
+    completion = { menu = { auto_show = true } },
+  },
   completion = {
     documentation = { auto_show = false },
     list = {
