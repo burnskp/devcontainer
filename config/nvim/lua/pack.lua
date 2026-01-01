@@ -17,6 +17,6 @@ vim.pack.add({
   "https://github.com/nvim-treesitter/nvim-treesitter-context",
   "https://github.com/sindrets/diffview.nvim",
   "https://github.com/stevearc/conform.nvim",
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = 'main' },
-  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range('~1') },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
+  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("~1") },
 }, { confirm = false })

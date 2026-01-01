@@ -12,10 +12,10 @@ vim.pack.add({
   "https://github.com/nvimtools/none-ls-extras.nvim",
   "https://github.com/nvimtools/none-ls.nvim",
   "https://github.com/sindrets/diffview.nvim",
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = 'main' },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
 }, { confirm = false })
 
-vim.cmd.colorscheme "catppuccin-latte"
+vim.cmd.colorscheme("catppuccin-latte")
 
 require("nvim-treesitter").install({
   "bash",
@@ -75,7 +75,7 @@ require("snacks").setup({
   },
   explorer = {
     enabled = true,
-    replace_netrw = true
+    replace_netrw = true,
   },
   indent = { enabled = true },
   input = { enabled = true },
@@ -86,24 +86,29 @@ require("snacks").setup({
       explorer = {
         auto_close = true,
         layout = { preset = "default", preview = false },
-      }
-    }
+      },
+    },
   },
   scope = { enabled = true },
   words = { enabled = false },
 })
 
-require('lualine').setup({
+require("lualine").setup({
   options = {
     section_separators = "",
     component_separators = "",
   },
   sections = {
-    lualine_a = { { "mode", fmt = function(str) return str:sub(1, 1) end, }, },
-    lualine_c = { 'filename', },
-    lualine_x = { 'diagnostics', 'filetype', },
-    lualine_y = { 'progress' },
-    lualine_z = { 'location' },
+    lualine_a = { {
+      "mode",
+      fmt = function(str)
+        return str:sub(1, 1)
+      end,
+    } },
+    lualine_c = { "filename" },
+    lualine_x = { "diagnostics", "filetype" },
+    lualine_y = { "progress" },
+    lualine_z = { "location" },
   },
 })
 
@@ -113,7 +118,7 @@ require("notes").setup({
   journalDir = "~/.local/share/notes/journal",
 })
 
-local nls = require('null-ls')
+local nls = require("null-ls")
 
 require("null-ls").setup({
   sources = {
@@ -128,15 +133,15 @@ require("null-ls").setup({
     nls.builtins.formatting.shfmt.with({
       extra_args = { "-ci", "-s", "-i", "2", "-bn", "-sr" },
     }),
-  }
+  },
 })
 
-require('Comment').setup()
+require("Comment").setup()
 require("nvim-surround").setup()
 
-require('gitsigns').setup{
+require("gitsigns").setup({
   on_attach = function(bufnr)
-    local gitsigns = require('gitsigns')
+    local gitsigns = require("gitsigns")
 
     local function map(mode, l, r, opts)
       opts = opts or {}
@@ -145,57 +150,59 @@ require('gitsigns').setup{
     end
 
     -- Navigation
-    map('n', ']c', function()
+    map("n", "]c", function()
       if vim.wo.diff then
-        vim.cmd.normal({']c', bang = true})
+        vim.cmd.normal({ "]c", bang = true })
       else
-        gitsigns.nav_hunk('next')
+        gitsigns.nav_hunk("next")
       end
     end)
 
-    map('n', '[c', function()
+    map("n", "[c", function()
       if vim.wo.diff then
-        vim.cmd.normal({'[c', bang = true})
+        vim.cmd.normal({ "[c", bang = true })
       else
-        gitsigns.nav_hunk('prev')
+        gitsigns.nav_hunk("prev")
       end
     end)
 
     -- Actions
-    map('n', '<leader>hs', gitsigns.stage_hunk)
-    map('n', '<leader>hr', gitsigns.reset_hunk)
+    map("n", "<leader>hs", gitsigns.stage_hunk)
+    map("n", "<leader>hr", gitsigns.reset_hunk)
 
-    map('v', '<leader>hs', function()
-      gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+    map("v", "<leader>hs", function()
+      gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
     end)
 
-    map('v', '<leader>hr', function()
-      gitsigns.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+    map("v", "<leader>hr", function()
+      gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
     end)
 
-    map('n', '<leader>hS', gitsigns.stage_buffer)
-    map('n', '<leader>hR', gitsigns.reset_buffer)
-    map('n', '<leader>hp', gitsigns.preview_hunk)
-    map('n', '<leader>hi', gitsigns.preview_hunk_inline)
+    map("n", "<leader>hS", gitsigns.stage_buffer)
+    map("n", "<leader>hR", gitsigns.reset_buffer)
+    map("n", "<leader>hp", gitsigns.preview_hunk)
+    map("n", "<leader>hi", gitsigns.preview_hunk_inline)
 
-    map('n', '<leader>hb', function()
+    map("n", "<leader>hb", function()
       gitsigns.blame_line({ full = true })
     end)
 
-    map('n', '<leader>hd', gitsigns.diffthis)
+    map("n", "<leader>hd", gitsigns.diffthis)
 
-    map('n', '<leader>hD', function()
-      gitsigns.diffthis('~')
+    map("n", "<leader>hD", function()
+      gitsigns.diffthis("~")
     end)
 
-    map('n', '<leader>hQ', function() gitsigns.setqflist('all') end)
-    map('n', '<leader>hq', gitsigns.setqflist)
+    map("n", "<leader>hQ", function()
+      gitsigns.setqflist("all")
+    end)
+    map("n", "<leader>hq", gitsigns.setqflist)
 
     -- Toggles
-    map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
-    map('n', '<leader>tw', gitsigns.toggle_word_diff)
+    map("n", "<leader>tb", gitsigns.toggle_current_line_blame)
+    map("n", "<leader>tw", gitsigns.toggle_word_diff)
 
     -- Text object
-    map({'o', 'x'}, 'ih', gitsigns.select_hunk)
-  end
-}
+    map({ "o", "x" }, "ih", gitsigns.select_hunk)
+  end,
+})

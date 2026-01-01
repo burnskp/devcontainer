@@ -1,12 +1,12 @@
 vim.g.mapleader = " "
 
 vim.g.clipboard = {
-  name = 'OSC 52',
+  name = "OSC 52",
   copy = {
-    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+    ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
   },
   paste = {
-    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+    ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
   },
 }
 
@@ -52,4 +52,4 @@ vim.g.editorconfig = {}
 vim.g.editorconfig.trim_trailing_whitespace = true
 vim.g.editorconfig.tab_width = 2
 
-vim.cmd.colorscheme "catppuccin-latte"
+vim.cmd.colorscheme("catppuccin-latte")

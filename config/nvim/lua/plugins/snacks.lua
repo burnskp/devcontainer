@@ -21,7 +21,7 @@ require("snacks").setup({
   },
   explorer = {
     enabled = true,
-    replace_netrw = true
+    replace_netrw = true,
   },
   indent = { enabled = true },
   input = { enabled = true },
@@ -32,8 +32,8 @@ require("snacks").setup({
       explorer = {
         auto_close = true,
         layout = { preset = "default", preview = false },
-      }
-    }
+      },
+    },
   },
   scope = { enabled = true },
   words = { enabled = false },

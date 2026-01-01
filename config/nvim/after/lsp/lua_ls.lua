@@ -1,5 +1,5 @@
 return {
-  cmd = {'lua-language-server', '--logpath=~/.cache/lua_ls'},
+  cmd = { "lua-language-server", "--logpath=~/.cache/lua_ls" },
   settings = {
     Lua = {
       telemetry = { enable = false },

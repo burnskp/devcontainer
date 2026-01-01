@@ -11,25 +11,28 @@ require("blink.cmp").setup({
   },
   keymap = {
     preset = "super-tab",
-    ['<Tab>'] = {
+    ["<Tab>"] = {
       function(cmp)
-        if cmp.snippet_active() then return cmp.accept()
-        else return cmp.select_and_accept() end
+        if cmp.snippet_active() then
+          return cmp.accept()
+        else
+          return cmp.select_and_accept()
+        end
       end,
-      'snippet_forward',
+      "snippet_forward",
       function() -- sidekick next edit suggestion
         return require("sidekick").nes_jump_or_apply()
       end,
       function()
         return vim.lsp.inline_completion.get()
       end,
-      'fallback'
+      "fallback",
     },
     ["<C-k>"] = { "show", "show_documentation", "hide_documentation" },
     ["<C-s>"] = { "show_signature", "hide_signature", "fallback" },
   },
   signature = { enabled = true },
   sources = {
-    default = { 'snippets', 'lsp', 'path', 'buffer' },
+    default = { "snippets", "lsp", "path", "buffer" },
   },
 })
