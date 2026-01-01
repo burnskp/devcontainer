@@ -96,6 +96,8 @@ RUN export GOBIN=/usr/local/bin \
   && go install github.com/docker/docker-language-server/cmd/docker-language-server@latest \
   && go install github.com/nametake/golangci-lint-langserver@latest \
   && go install golang.org/x/tools/gopls@latest \
+  && go install github.com/suzuki-shunsuke/pinact/v3/cmd/pinact@latest \
+  && go install github.com/skipants/update-action-pins@latest \
   && rm -rf /go/pkg /root/.cache/go-build
 
 RUN UV_TOOL_BIN_DIR=/usr/local/bin uv tool install ruff \ 
