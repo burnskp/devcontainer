@@ -88,6 +88,7 @@ RUN export BUN_INSTALL="/usr/local" \
   && bun add --no-cache -g markdownlint-cli2 \
   && bun add --no-cache -g opencode-ai \
   && bun add --no-cache -g pyright \
+  && bun add --no-cache -g snyk \
   && bun add --no-cache -g tree-sitter-cli \
   && bun add --no-cache -g vscode-json-languageservice \
   && bun add --no-cache -g yaml-language-server 
@@ -140,6 +141,7 @@ RUN mkdir -p $HOME/.config $HOME/.local/share/nvim $HOME/.local/state \
   && ln -s /data/opencode $HOME/.local/share/opencode \
   && ln -s /data/lazygit $HOME/.local/state/lazygit \
   && ln -s /data/github-copilot $HOME/.config/github-copilot \
+  && ln -s /data/configstore $HOME/.config/configstore \
   && nvim --headless -c "lua require('blink.cmp.fuzzy.download').ensure_downloaded(function(err) if err then print(err) end end)" -c "qall" 2>&1 \
   | tee ~/.local/share/nvim/update.log
 
