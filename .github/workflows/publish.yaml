@@ -6,7 +6,7 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     env:
-      REGISTRY: ghcr.io/burnskp/containers
+      REGISTRY: ghcr.io/burnskp
     permissions:
       contents: read
       packages: write
