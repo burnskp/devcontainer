@@ -6,6 +6,7 @@ require("plugins.noice")
 require("plugins.which-key")
 require("plugins.blink-cmp")
 require("plugins.focus")
+require("plugins.smart-splits")
 require("plugins.snacks")
 require("plugins.render-markdown")
 

@@ -1,9 +1,4 @@
 require("sidekick").setup({
-  cli = {
-    mux = {
-      enabled = false,
-    },
-  },
   tools = {
     opencode = {
       cmd = { "opencode" },

@@ -9,6 +9,7 @@ vim.pack.add({
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/MeanderingProgrammer/render-markdown.nvim",
   "https://github.com/mfussenegger/nvim-lint",
+  "https://github.com/mrjones2014/smart-splits.nvim",
   "https://github.com/MunifTanjim/nui.nvim",
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/numToStr/Comment.nvim",
