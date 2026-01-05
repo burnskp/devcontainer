@@ -115,9 +115,11 @@ RUN export GOBIN=/usr/local/bin \
   && go install golang.org/x/tools/gopls@latest \
   && rm -rf /go/pkg /root/.cache/go-build
 
-RUN UV_TOOL_BIN_DIR=/usr/local/bin uv tool install ruff \ 
-  && UV_TOOL_BIN_DIR=/usr/local/bin uv tool install pre-commit \
-  && UV_TOOL_BIN_DIR=/usr/local/bin uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+RUN export UV_TOOL_BIN_DIR=/usr/local/bin \
+  && export UV_TOOL_DIR=/opt/uv \
+  && uv tool install ruff \ 
+  && uv tool install pre-commit \
+  && uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 
 RUN LUA_VERSION=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest | grep -Po '"tag_name": "\K.*?(?=")') \
     && if [ "$TARGETARCH" = "amd64" ]; then \
