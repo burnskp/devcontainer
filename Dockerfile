@@ -39,6 +39,7 @@ RUN add-apt-repository -y universe \
   bat \
   build-essential \
   fd-find \
+  fuse-overlayfs \
   fzf \
   git \
   git-delta \
@@ -48,6 +49,8 @@ RUN add-apt-repository -y universe \
   libicu76 \
   lua5.4 \
   nodejs \
+  podman \
+  podman-docker\
   python3 \
   python3-pip \
   python3-venv \
@@ -58,6 +61,8 @@ RUN add-apt-repository -y universe \
   starship \
   terraform \
   terraform-ls \
+  tmux \
+  uidmap \
   unzip \
   wget \
   zsh \
@@ -66,7 +71,9 @@ RUN add-apt-repository -y universe \
   && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/man/* \
   && chsh -s /bin/zsh ubuntu \
   && ln -s "$(which fdfind)" /usr/local/bin/fd \
-  && ln -s "$(which batcat)" /usr/local/bin/bat
+  && ln -s "$(which batcat)" /usr/local/bin/bat \
+  && echo "root:1:65535\nubuntu:100000:65535" > /etc/subuid \
+  && echo "root:1:65535\nubuntu:100000:65535" > /etc/subgid
 
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
   export NVIM=nvim-linux-x86_64; \
@@ -133,6 +140,7 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
     && curl -Lo /usr/local/bin/marksman https://github.com/artempyanykh/marksman/releases/latest/download/marksman-${MARKSMAN_ARCH} \
     && chmod +x /usr/local/bin/marksman
 
+
 COPY start.sh /start.sh
 COPY --chown=ubuntu:ubuntu config /home/ubuntu/.config
 
@@ -142,8 +150,14 @@ ENV HOME="/home/ubuntu"
 ENV ZDOTDIR="$HOME/.config/zsh"
 RUN bat cache --build
 
+
+
+RUN mkdir -p ~/.local/share/tmux/plugins \
+   && git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm \
+   && ~/.local/share/tmux/plugins/tpm/bin/install_plugins
+
 # Make Links
-RUN mkdir -p $HOME/.config $HOME/.local/share/nvim $HOME/.local/state \
+RUN mkdir -p $HOME/.local/share/nvim $HOME/.local/state \
   && opencode models \
   && rm -rf $HOME/.local/share/opencode \
   && ln -s /data/bootdev.yaml $HOME/.bootdev.yaml \

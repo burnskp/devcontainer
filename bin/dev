@@ -169,6 +169,11 @@ else
 fi
 container_dir="$(basename "$root")"
 docker run --rm -it \
+  --security-opt label=disable \
+  --security-opt seccomp=unconfined \
+  --cap-add=sys_admin \
+  --cap-add mknod \
+  --device=/dev/fuse \
   -v "$SSH_AUTH_SOCK:/ssh-agent" \
   -e SSH_AUTH_SOCK=/ssh-agent \
   -v "$XDG_CONFIG_HOME/git":/home/ubuntu/.config/git:ro \
