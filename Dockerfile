@@ -160,6 +160,9 @@ RUN mkdir -p $HOME/.config $HOME/.local/share/nvim $HOME/.local/state \
   | tee ~/.local/share/nvim/update.log
 
 RUN cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
-  && cargo build --release
+  && cargo build --release \ 
+  && cd ~/.local/share/nvim/site/pack/core/opt/avante.nvim \
+  && make
+
 
 ENTRYPOINT ["/start.sh"]

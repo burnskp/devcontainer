@@ -7,6 +7,7 @@ require("plugins.which-key")
 require("plugins.blink-cmp")
 require("plugins.focus")
 require("plugins.snacks")
+require("plugins.render-markdown")
 
 require("plugins.lsp")
 require("plugins.conform")
@@ -16,6 +17,7 @@ require("plugins.comment")
 require("plugins.gitsigns")
 require("plugins.nvim-surround")
 require("plugins.sidekick")
+require("plugins.avante")
 
 require("plugins.lualine")
 
