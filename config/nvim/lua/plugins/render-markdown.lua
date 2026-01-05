@@ -4,6 +4,7 @@ require("render-markdown").setup({
     width = "block",
     right_pad = 1,
   },
+  file_types = { "markdown", "Avante" },
   heading = {
     sign = false,
   },
