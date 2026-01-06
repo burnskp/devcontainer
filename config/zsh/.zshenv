@@ -32,6 +32,17 @@ export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
 export LESSHISTFILE="$XDG_STATE_HOME/less/history"
 export PYTHON_HISTORY="$XDG_DATA_HOME/share/python/history"
 
+export ANSIBLE_HOME="$XDG_DATA_HOME/ansible"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME/claude"
+export CODEX_HOME="$XDG_DATA_HOME/codex"
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export PYTHON_HISTORY="$XDG_DATA_HOME/share/python/history"
+export W3M_DIR="$XDG_DATA_HOME/w3m"
+export GOBIN=$GOPATH/bin
+export GOPATH=$HOME/.local/share/go
+
 check_paths=()
 check_paths+="${HOME}/.bun/bin"
 check_paths+="${HOME}/.cargo/bin"

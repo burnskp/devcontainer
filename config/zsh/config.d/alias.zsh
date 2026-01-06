@@ -20,6 +20,8 @@ alias rgi="batgrep -i"
 alias rgs="batgrep -s"
 alias tf="tail -f | bat --paging=never -l log"
 
+alias clauded="claude --allow-dangerously-skip-permissions"
+
 function help() {
   "$@" --help 2>&1 | bathelp
 }
