@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Configuration
 readonly DATA="${XDG_DATA_HOME}/devcontainer"
-readonly CONTAINER="ghcr.io/burnskp/containers/dev:latest"
+readonly CONTAINER="ghcr.io/burnskp/dev:latest"
 
 # The image is built by GitHub Actions on:
 #   cron: 0 1 * * 0   (Sundays at 01:00)

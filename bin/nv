@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Configuration
 readonly DATA="${XDG_DATA_HOME}/devcontainer"
-readonly CONTAINER="ghcr.io/burnskp/containers/dev:latest"
+readonly CONTAINER="ghcr.io/burnskp/dev:latest"
 
 # The image is built by GitHub Actions on:
 #   cron: 0 1 * * 0   (Sundays at 01:00)
@@ -239,7 +239,7 @@ if [ $# -gt 0 ]; then
     exit 1
   fi
 elif git -C "$PWD" rev-parse 2>/dev/null; then
-  handle_git_dir "$(git -C "$PWD" rev-prase --show-toplevel)"
+  handle_git_dir "$(git -C "$PWD" rev-parse --show-toplevel)"
 else
   echo "Error: not in a git repository and no file target specified" >&2
   exit 1
