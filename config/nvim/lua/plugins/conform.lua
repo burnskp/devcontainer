@@ -1,6 +1,7 @@
 require("conform").setup({
   formatters_by_ft = {
     markdown = { "markdownlint-cli2" },
+    packer = { "packer_fmt" },
     sh = { "shfmt" },
     zsh = { "shfmt" },
   },

@@ -15,7 +15,6 @@ ENV NONINTERACTIVE=1
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
 COPY --from=ghcr.io/terraform-linters/tflint /usr/local/bin/tflint /usr/local/bin/tflint
 COPY --from=golangci/golangci-lint:latest /usr/bin/golangci-lint /usr/local/bin/golangci-lint
-COPY --from=hashicorp/terraform:latest /bin/terraform /local/bin/terraform
 COPY --from=johnnymorganz/stylua:latest /stylua /usr/bin/stylua
 COPY --from=oven/bun:latest /usr/local/bin/bun /usr/local/bin/bun
 COPY --from=rust:latest /usr/local/cargo/bin/ /usr/local/bin/
@@ -49,6 +48,7 @@ RUN add-apt-repository -y universe \
   libicu76 \
   lua5.4 \
   nodejs \
+  packer \
   podman \
   podman-docker\
   python3 \
