@@ -54,6 +54,8 @@ RUN add-apt-repository -y universe \
   python3 \
   python3-pip \
   python3-venv \
+  ruby \
+  ruby-dev \
   ripgrep \
   shellcheck \
   shfmt \
@@ -142,7 +144,6 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
     && curl -Lo /usr/local/bin/marksman https://github.com/artempyanykh/marksman/releases/latest/download/marksman-${MARKSMAN_ARCH} \
     && chmod +x /usr/local/bin/marksman
 
-
 COPY start.sh /start.sh
 COPY --chown=ubuntu:ubuntu config /home/ubuntu/.config
 
@@ -152,7 +153,7 @@ ENV HOME="/home/ubuntu"
 ENV ZDOTDIR="$HOME/.config/zsh"
 RUN bat cache --build
 
-
+RUN rustup default stable
 
 RUN mkdir -p ~/.local/share/tmux/plugins \
    && git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm \
@@ -179,6 +180,5 @@ RUN cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
   && cargo build --release \ 
   && cd ~/.local/share/nvim/site/pack/core/opt/avante.nvim \
   && make
-
 
 ENTRYPOINT ["/start.sh"]
