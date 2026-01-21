@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-if command -v gdate >/dev/null 2>&1; then
+if command -v gdate > /dev/null 2>&1; then
   DATE="gdate"
 else
   DATE="date"
@@ -16,7 +16,7 @@ readonly CONTAINER="ghcr.io/burnskp/dev:latest"
 # We assume the build completes reasonably soon after that time.
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $(basename "$0") [OPTIONS] [TARGET] [extra args...]
 
 Options:
@@ -60,19 +60,19 @@ ensure_image_freshness() {
   local force_pull="$1"
   local skip_pull="$2"
 
-  if ! command -v docker >/dev/null 2>&1; then
+  if ! command -v docker > /dev/null 2>&1; then
     echo "Error: docker not found in PATH" >&2
     exit 1
   fi
 
   # If user explicitly says "don't pull", honor that unless force is set.
-  if [[ "$skip_pull" == "true" && "$force_pull" == "false" ]]; then
+  if [[ $skip_pull == "true" && $force_pull == "false" ]]; then
     return
   fi
 
   # If image doesn't exist locally, just pull it.
   local created_raw image_created_ts last_build_ts before_ts after_ts
-  if ! created_raw=$(docker image inspect --format '{{.Created}}' "$CONTAINER" 2>/dev/null); then
+  if ! created_raw=$(docker image inspect --format '{{.Created}}' "$CONTAINER" 2> /dev/null); then
     echo "Local image '$CONTAINER' not found. Pulling..." >&2
     docker pull "$CONTAINER"
     return
@@ -81,7 +81,7 @@ ensure_image_freshness() {
   image_created_ts=$($DATE -d "$created_raw" +%s)
   last_build_ts=$(get_last_scheduled_build_epoch)
 
-  if [[ "$force_pull" == "true" ]]; then
+  if [[ $force_pull == "true" ]]; then
     echo "Forcing docker pull of $CONTAINER..." >&2
     if ! docker pull "$CONTAINER"; then
       echo "Warning: docker pull failed; continuing with existing image." >&2
@@ -105,8 +105,8 @@ ensure_image_freshness() {
   fi
 
   # Re-check the image creation time after pull.
-  created_raw=$(docker image inspect --format '{{.Created}}' "$CONTAINER" 2>/dev/null || true)
-  if [[ -n "$created_raw" ]]; then
+  created_raw=$(docker image inspect --format '{{.Created}}' "$CONTAINER" 2> /dev/null || true)
+  if [[ -n $created_raw ]]; then
     after_ts=$($DATE -d "$created_raw" +%s)
   else
     after_ts="$before_ts"
@@ -139,34 +139,32 @@ skip_auto_pull=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  -F | --force-pull)
-    force_pull=true
-    shift
-    ;;
-  --skip-pull | --no-pull)
-    skip_auto_pull=true
-    shift
-    ;;
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  --)
-    shift
-    break
-    ;;
-  -*)
-    echo "Unknown option: $1" >&2
-    usage
-    exit 1
-    ;;
-  *)
-    break
-    ;;
+    -F | --force-pull)
+      force_pull=true
+      shift
+      ;;
+    --skip-pull | --no-pull)
+      skip_auto_pull=true
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+    *)
+      break
+      ;;
   esac
 done
-
-
 
 if git -C "$(dirname "$(realpath "$PWD")")" rev-parse 2> /dev/null; then
   root="$(git -C "$(dirname "$(realpath "$PWD")")" rev-parse --show-toplevel)"
@@ -184,7 +182,7 @@ fi
 
 ensure_image_freshness "$force_pull" "$skip_auto_pull"
 
-if [[ "${TERMINAL:-}" == "ghostty" ]]; then
+if [[ ${TERMINAL:-} == "ghostty" ]]; then
   TERM=xterm-ghostty
 fi
 
@@ -196,6 +194,8 @@ docker run --rm -it \
   --device=/dev/fuse \
   -v "$SSH_AUTH_SOCK:/ssh-agent" \
   -e SSH_AUTH_SOCK=/ssh-agent \
+  -v "$HOME/.ssh/config":/home/ubuntu/.ssh/config:ro \
+  -v "$HOME/.ssh/pub":/home/ubuntu/.ssh/pub:ro \
   -e TERM \
   -v "$XDG_CONFIG_HOME/git":/home/ubuntu/.config/git:ro \
   -v "$DATA:/data" \
