@@ -89,31 +89,34 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
   && tar -xf /tmp/nvim.tgz --strip-components=1 -C /usr/local \
   && rm /tmp/nvim.tgz
 
-RUN curl -sLo /tmp/bat-extras.zip https://github.com/eth-p/bat-extras/releases/download/v2024.08.24/bat-extras-2024.08.24.zip \
+RUN BAT_EXTRAS_VERSION=$(curl -s https://api.github.com/repos/eth-p/bat-extras/releases/latest | grep -Po '"tag_name": "\K.*?(?=")') \
+  && curl -sLo /tmp/bat-extras.zip "https://github.com/eth-p/bat-extras/releases/download/${BAT_EXTRAS_VERSION}/bat-extras-${BAT_EXTRAS_VERSION#v}.zip" \
   && unzip -d /usr/local /tmp/bat-extras.zip \
   && rm /tmp/bat-extras.zip
 
-RUN export BUN_INSTALL="/usr/local" \
-  && bun add --no-cache -g @actions/languageserver \
-  && bun add --no-cache -g @anthropic-ai/claude-code \
-  && bun add --no-cache -g @biomejs/biome \
-  && bun add --no-cache -g @github/copilot \
-  && bun add --no-cache -g @github/copilot-language-server \
-  && bun add --no-cache -g markdownlint-cli2 \
-  && bun add --no-cache -g opencode-ai \
-  && bun add --no-cache -g pyright \
-  && bun add --no-cache -g snyk \
-  && bun add --no-cache -g tree-sitter-cli \
-  && bun add --no-cache -g vscode-json-languageservice \
-  && bun add --no-cache -g yaml-language-server 
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+  export BUN_INSTALL="/usr/local" \
+  && bun add -g @actions/languageserver \
+  && bun add -g @anthropic-ai/claude-code \
+  && bun add -g @biomejs/biome \
+  && bun add -g @github/copilot \
+  && bun add -g @github/copilot-language-server \
+  && bun add -g markdownlint-cli2 \
+  && bun add -g opencode-ai \
+  && bun add -g pyright \
+  && bun add -g snyk \
+  && bun add -g tree-sitter-cli \
+  && bun add -g vscode-json-languageservice \
+  && bun add -g yaml-language-server 
 
-RUN export GOBIN=/usr/local/bin \
+RUN --mount=type=cache,target=/root/.cache/go-build \
+  --mount=type=cache,target=/go/pkg \
+  export GOBIN=/usr/local/bin \
   && go install github.com/docker/docker-language-server/cmd/docker-language-server@latest \
   && go install github.com/nametake/golangci-lint-langserver@latest \
   && go install github.com/skipants/update-action-pins@latest \
   && go install github.com/suzuki-shunsuke/pinact/v3/cmd/pinact@latest \
-  && go install golang.org/x/tools/gopls@latest \
-  && rm -rf /go/pkg /root/.cache/go-build
+  && go install golang.org/x/tools/gopls@latest
 
 RUN export UV_TOOL_BIN_DIR=/usr/local/bin \
   && export UV_TOOL_DIR=/opt/uv \
@@ -172,8 +175,9 @@ RUN mkdir -p $HOME/.local/share/nvim $HOME/.local/state \
   && nvim --headless -c "lua require('blink.cmp.fuzzy.download').ensure_downloaded(function(err) if err then print(err) end end)" -c "qall" 2>&1 \
   | tee ~/.local/share/nvim/update.log
 
-RUN cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
-  && cargo build --release \ 
+RUN --mount=type=cache,target=/home/ubuntu/.cargo/registry,uid=1000,gid=1000 \
+  cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
+  && cargo build --release \
   && cd ~/.local/share/nvim/site/pack/core/opt/avante.nvim \
   && make
 
