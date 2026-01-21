@@ -27,12 +27,12 @@ RUN apt-get update && apt-get -y install curl locales software-properties-common
   && apt-get clean \
   && rm /etc/localtime \
   && ln -s /usr/share/zoneinfo/America/Chicago /etc/localtime \
-  && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/man/* 
+  && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/man/*
 
 RUN add-apt-repository -y universe \
   && add-apt-repository -y ppa:longsleep/golang-backports \
   && curl -fsSL "https://deb.nodesource.com/setup_24.x" | bash - \
-  && curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \ 
+  && curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com noble main" > /etc/apt/sources.list.d/hashicorp.list \
   && apt-get update \
   && apt-get full-upgrade -y \
@@ -107,7 +107,7 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
   && bun add -g snyk \
   && bun add -g tree-sitter-cli \
   && bun add -g vscode-json-languageservice \
-  && bun add -g yaml-language-server 
+  && bun add -g yaml-language-server
 
 RUN --mount=type=cache,target=/root/.cache/go-build \
   --mount=type=cache,target=/go/pkg \
@@ -120,7 +120,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 
 RUN export UV_TOOL_BIN_DIR=/usr/local/bin \
   && export UV_TOOL_DIR=/opt/uv \
-  && uv tool install ruff \ 
+  && uv tool install ruff \
   && uv tool install pre-commit
 
 RUN LUA_VERSION=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest | grep -Po '"tag_name": "\K.*?(?=")') \
@@ -146,6 +146,7 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
 
 COPY start.sh /start.sh
 COPY --chown=ubuntu:ubuntu config /home/ubuntu/.config
+COPY --chown=ubuntu:ubuntu known_hosts /home/ubuntu/.ssh/known_hosts
 COPY xterm-ghostty.terminfo /tmp
 RUN tic -x /tmp/xterm-ghostty.terminfo && rm /tmp/xterm-ghostty.terminfo
 
