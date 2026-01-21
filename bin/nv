@@ -147,6 +147,7 @@ run_container() {
     -v "$HOME/.ssh/pub":/home/ubuntu/.ssh/pub:ro \
     -e TERM \
     -v "$XDG_CONFIG_HOME/git":/home/ubuntu/.config/git:ro \
+    -v "$XDG_DATA_HOME/notes":/home/ubuntu/.local/share/notes:rw \
     -v "$DATA:/data" \
     "$@"
 }

@@ -6,6 +6,9 @@ alias va='source .venv/bin/activate'
 alias vi="nvim"
 alias wget="wget --hsts-file=$XDG_DATA_HOME/wget-hsts"
 
+alias nf="nvim -c Notes"
+alias ng="nvim -c NotesGrep"
+
 alias bathelp='bat --plain --language=help'
 alias bl="bat --paging=never -l log"
 alias cat='bat -p --paging=never'
