@@ -1,10 +1,7 @@
-#!/bin/zsh
 FPATH="$XDG_CONFIG_HOME/zsh/completions:$FPATH"
 
 # Enable smart autocompletion
-if ! [ -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION" ]; then
-  mkdir -p $XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION
-fi
+mkdir -p $XDG_CACHE_HOME/zsh
 autoload -Uz compinit && compinit -u -d $XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION
 setopt complete_in_word
 
@@ -26,9 +23,9 @@ zstyle ':completion:*:*:kill:*:processes' command 'ps --forest -e -o pid,user,tt
 #Set Warning message when nothing can be autocompleted
 zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
 
-# Enable the use of auto completion cache to speed up some functions, such as pacman
+# Enable the use of auto completion cache to speed up some functions
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.zsh/cache
+zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zsh
 
 # Allow 1 mistake in auto completion (fuzzy)
 zstyle ':completion:*' completer _complete _match _approximate
