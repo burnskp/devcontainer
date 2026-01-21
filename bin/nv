@@ -1,6 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
+if command -v gdate >/dev/null 2>&1; then
+  DATE="gdate"
+else
+  DATE="date"
+fi
+
 # Configuration
 readonly DATA="${XDG_DATA_HOME}/devcontainer"
 readonly CONTAINER="ghcr.io/burnskp/dev:latest"
@@ -34,10 +40,10 @@ EOF
 #   cron: 0 1 * * 0  (Sunday at 01:00)
 get_last_scheduled_build_epoch() {
   local now candidate last
-  now=$(date +%s)
+  now=$($DATE +%s)
 
   # 'this sunday' = upcoming Sunday unless today is Sunday
-  candidate=$(date -d 'this sunday 01:00' +%s)
+  candidate=$($DATE -d 'this sunday 01:00' +%s)
 
   if ((now >= candidate)); then
     # We are past this Sunday's 01:00 → last scheduled build = this Sunday 01:00
@@ -72,7 +78,7 @@ ensure_image_freshness() {
     return
   fi
 
-  image_created_ts=$(date -d "$created_raw" +%s)
+  image_created_ts=$($DATE -d "$created_raw" +%s)
   last_build_ts=$(get_last_scheduled_build_epoch)
 
   if [[ "$force_pull" == "true" ]]; then
@@ -101,7 +107,7 @@ ensure_image_freshness() {
   # Re-check the image creation time after pull.
   created_raw=$(docker image inspect --format '{{.Created}}' "$CONTAINER" 2>/dev/null || true)
   if [[ -n "$created_raw" ]]; then
-    after_ts=$(date -d "$created_raw" +%s)
+    after_ts=$($DATE -d "$created_raw" +%s)
   else
     after_ts="$before_ts"
   fi
@@ -109,8 +115,8 @@ ensure_image_freshness() {
   # If it's not newer, warn and require Enter (when interactive).
   if ((after_ts <= before_ts)); then
     local last_build_human image_human
-    last_build_human=$(date -d "@$last_build_ts")
-    image_human=$(date -d "@$image_created_ts")
+    last_build_human=$($DATE -d "@$last_build_ts")
+    image_human=$($DATE -d "@$image_created_ts")
 
     echo >&2
     echo "WARNING: No newer image for '$CONTAINER' is available." >&2
@@ -137,6 +143,7 @@ run_container() {
     --device=/dev/fuse \
     -v "$SSH_AUTH_SOCK:/ssh-agent" \
     -e SSH_AUTH_SOCK=/ssh-agent \
+    -e TERM \
     -v "$XDG_CONFIG_HOME/git":/home/ubuntu/.config/git:ro \
     -v "$DATA:/data" \
     "$@"
@@ -223,6 +230,10 @@ done
 # Only now do we touch Docker / image.
 ensure_image_freshness "$force_pull" "$skip_auto_pull"
 
+if [[ "${TERMINAL:-}" == "ghostty" ]]; then
+  TERM=xterm-ghostty
+fi
+
 # Main logic
 if [ $# -gt 0 ]; then
   target="${!#}"
@@ -231,6 +242,11 @@ if [ $# -gt 0 ]; then
   if git -C "$(dirname "$(realpath "$target")")" rev-parse 2>/dev/null; then
     if [ -f "$target" ]; then
       handle_git_file "$@"
+    elif [ -d "$target" ]; then
+      handle_git_dir "$(git -C "$(realpath "$target")" rev-parse --show-toplevel)"
+    else
+      echo "Error: target '$target' does not exist" >&2
+      exit 1
     fi
   elif [ -f "$target" ]; then
     handle_standalone_file "$@"
