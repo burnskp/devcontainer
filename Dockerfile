@@ -25,6 +25,8 @@ RUN apt-get update && apt-get -y install curl locales software-properties-common
   && update-locale LANG=en_US.UTF-8 \
   && apt-get autoremove -y \
   && apt-get clean \
+  && rm /etc/localtime \
+  && ln -s /usr/share/zoneinfo/America/Chicago /etc/localtime \
   && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/man/* 
 
 RUN add-apt-repository -y universe \
