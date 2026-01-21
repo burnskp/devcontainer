@@ -7,6 +7,7 @@ require("which-key").setup({
     { "<leader>g", group = "Git" },
     { "<leader>k", group = "Sidekick" },
     { "<leader>l", group = "LSP" },
+    { "<leader>n", group = "Notes" },
     { "<leader>u", group = "Toggle" },
     { "<leader>w", group = "Window" },
   },

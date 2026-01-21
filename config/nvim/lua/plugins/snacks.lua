@@ -8,6 +8,8 @@ require("snacks").setup({
         { icon = " ", key = "e", desc = "New File", action = ":ene | startinsert" },
         { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
         { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+        { icon = " ", key = "n", desc = "Notes", action = ":Notes" },
+        { icon = " ", key = "s", desc = "Search Notes", action = ":NotesGrep" },
         { icon = " ", key = "q", desc = "Quit", action = ":qa" },
       },
     },
