@@ -6,7 +6,7 @@ wt() {
   local repo_dir="/work/"*(/Y1)
   local worktree_dir="$HOME/worktree/$branch"
 
-  if [[ -z "$branch" ]]; then
+  if [[ -z $branch ]]; then
     echo "Usage: wt <branch-name>"
     return 1
   fi
@@ -16,7 +16,7 @@ wt() {
     return 1
   fi
 
-  if [[ -d "$worktree_dir" ]]; then
+  if [[ -d $worktree_dir ]]; then
     cd "$worktree_dir" && claude --dangerously-skip-permissions
   else
     mkdir -p "$HOME/worktree"
@@ -29,17 +29,17 @@ wtd() {
   local worktree_base="$HOME/worktree"
   local repo_dir="/work/"*(/Y1)
 
-  if [[ "$current_dir" != "$worktree_base"/* ]]; then
+  if [[ $current_dir != "$worktree_base"/* ]]; then
     echo "Error: Not in a worktree directory"
     return 1
   fi
 
   local branch="${current_dir#$worktree_base/}"
-  branch="${branch%%/*}"  # Get just the branch name if in a subdirectory
+  branch="${branch%%/*}" # Get just the branch name if in a subdirectory
 
-  cd "$repo_dir" && \
-    git worktree remove "$worktree_base/$branch" && \
-    git branch -D "$branch"
+  cd "$repo_dir" \
+    && git worktree remove "$worktree_base/$branch" \
+    && git branch -D "$branch"
 }
 
 # List all worktrees
@@ -53,13 +53,13 @@ wts() {
   local branch="$1"
   local worktree_dir="$HOME/worktree/$branch"
 
-  if [[ -z "$branch" ]]; then
+  if [[ -z $branch ]]; then
     echo "Available worktrees:"
-    ls "$HOME/worktree" 2>/dev/null || echo "  (none)"
+    ls "$HOME/worktree" 2> /dev/null || echo "  (none)"
     return 1
   fi
 
-  if [[ -d "$worktree_dir" ]]; then
+  if [[ -d $worktree_dir ]]; then
     cd "$worktree_dir"
   else
     echo "Worktree '$branch' not found"
@@ -73,32 +73,15 @@ wtb() {
   local repo_dir="/work/"*(/Y1)
   local worktree_dir="$HOME/worktree/$branch"
 
-  if [[ -z "$branch" ]]; then
+  if [[ -z $branch ]]; then
     echo "Usage: wtb <new-branch-name>"
     return 1
   fi
 
   mkdir -p "$HOME/worktree"
-  git -C "$repo_dir" fetch origin main && \
-    git -C "$repo_dir" worktree add -b "$branch" "$worktree_dir" origin/main && \
-    cd "$worktree_dir" && claude --dangerously-skip-permissions
-}
-
-# Push current branch and open PR
-wtpr() {
-  local current_dir="$PWD"
-  local worktree_base="$HOME/worktree"
-  local repo_dir="/work/"*(/Y1)
-
-  if [[ "$current_dir" != "$worktree_base"/* ]]; then
-    echo "Error: Not in a worktree directory"
-    return 1
-  fi
-
-  local branch="${current_dir#$worktree_base/}"
-  branch="${branch%%/*}"
-
-  git push -u origin "$branch" && gh pr create --web
+  git -C "$repo_dir" fetch origin main \
+    && git -C "$repo_dir" worktree add -b "$branch" "$worktree_dir" origin/main \
+    && cd "$worktree_dir" && claude --dangerously-skip-permissions
 }
 
 # Sync current worktree with main
@@ -113,7 +96,7 @@ wtr() {
 }
 
 # Clean up merged worktrees
-wtclean() {
+wtc() {
   local repo_dir="/work/"*(/Y1)
   local worktree_base="$HOME/worktree"
 
