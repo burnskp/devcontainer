@@ -5,7 +5,7 @@ for i in $XDG_CONFIG_HOME/zsh/config.d/*.zsh; do
   source "$i"
 done
 
-ZAQ_PREFIXES=('git commit -m' 'gcm' 'gcmp' 'gacmp' 'chezmoi git commit -m' 'chgcm' 'chgacmp' 'chgcmp' 'ssh( -[^ ]##)# [^ -][^ ]#' 'sshnh( -[^ ]##)# [^ -][^ ]#')
+ZAQ_PREFIXES=('git commit -m' 'gcm' 'gcmp' 'gacmp' 'ssh( -[^ ]##)# [^ -][^ ]#' 'sshnh( -[^ ]##)# [^ -][^ ]#')
 
 source "$XDG_CONFIG_HOME/zsh/plugins/autoquoter/zsh-autoquoter.zsh"
 source "$XDG_CONFIG_HOME/zsh/plugins/autopair/autopair.zsh"
