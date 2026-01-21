@@ -146,6 +146,7 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
 
 COPY start.sh /start.sh
 COPY --chown=ubuntu:ubuntu config /home/ubuntu/.config
+COPY --chown=ubuntu:ubuntu local /home/ubuntu/.local
 COPY --chown=ubuntu:ubuntu known_hosts /home/ubuntu/.ssh/known_hosts
 COPY xterm-ghostty.terminfo /tmp
 RUN tic -x /tmp/xterm-ghostty.terminfo && rm /tmp/xterm-ghostty.terminfo

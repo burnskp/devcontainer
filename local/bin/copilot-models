@@ -1,0 +1,39 @@
+#!/bin/bash
+set -euo pipefail
+
+APPS_JSON="$HOME/.config/github-copilot/apps.json"
+
+if [[ ! -f "$APPS_JSON" ]]; then
+  echo "Error: $APPS_JSON not found" >&2
+  exit 1
+fi
+
+OAUTH_TOKEN=$(jq -r '.[].oauth_token' "$APPS_JSON")
+if [[ -z "$OAUTH_TOKEN" || "$OAUTH_TOKEN" == "null" ]]; then
+  echo "Error: Failed to extract oauth_token from $APPS_JSON" >&2
+  exit 1
+fi
+
+TOKEN_RESPONSE=$(curl -sL https://api.github.com/copilot_internal/v2/token \
+  -H "Authorization: Bearer $OAUTH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Copilot-Integration-Id: vscode-chat")
+
+API_TOKEN=$(echo "$TOKEN_RESPONSE" | jq -r ".token")
+if [[ -z "$API_TOKEN" || "$API_TOKEN" == "null" ]]; then
+  echo "Error: Failed to get API token from GitHub" >&2
+  echo "Response: $TOKEN_RESPONSE" >&2
+  exit 1
+fi
+
+if [[ "$(uname -o)" == "Darwin" ]]; then
+  URL=https://api.business.githubcopilot.com
+else
+  URL=https://api.githubcopilot.com
+fi
+
+curl -sL -H "Accept: application/json" \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Copilot-Integration-Id: vscode-chat" \
+  -H "Editor-Version: curl/0.1.0" \
+  "$URL" | jq -r '.data[].id'

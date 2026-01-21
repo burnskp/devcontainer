@@ -19,6 +19,7 @@ require("plugins.gitsigns")
 require("plugins.nvim-surround")
 require("plugins.sidekick")
 require("plugins.avante")
+require("plugins.notes")
 
 require("plugins.lualine")
 
