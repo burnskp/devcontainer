@@ -1,4 +1,5 @@
 vim.pack.add({
+  "https://github.com/burnskp/notes.nvim",
   "https://github.com/catppuccin/nvim",
   "https://github.com/folke/noice.nvim",
   "https://github.com/folke/sidekick.nvim",
@@ -14,10 +15,10 @@ vim.pack.add({
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/numToStr/Comment.nvim",
   "https://github.com/nvim-focus/focus.nvim",
+  "https://github.com/nvim-lua/plenary.nvim",
   "https://github.com/nvim-lualine/lualine.nvim",
   "https://github.com/nvim-tree/nvim-web-devicons",
   "https://github.com/nvim-treesitter/nvim-treesitter-context",
-  "https://github.com/nvim-lua/plenary.nvim",
   "https://github.com/sindrets/diffview.nvim",
   "https://github.com/stevearc/conform.nvim",
   "https://github.com/stevearc/dressing.nvim",
