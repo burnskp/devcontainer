@@ -3,7 +3,7 @@ alias clauded="claude --dangerously-skip-permissions"
 
 wt() {
   local branch="$1"
-  local repo_dir="/work/"*(/Y1)
+  local repo_dir=(/work/*(/))
   local worktree_dir="$HOME/worktree/$branch"
 
   if [[ -z $branch ]]; then
@@ -17,34 +17,48 @@ wt() {
   fi
 
   if [[ -d $worktree_dir ]]; then
-    cd "$worktree_dir" && claude --dangerously-skip-permissions
+    echo "Switching to existing worktree for branch '$branch'"
+    cd "$worktree_dir" \
+      && claude --dangerously-skip-permissions
   else
+    echo "Creating new worktree for branch '$branch'"
     mkdir -p "$HOME/worktree"
-    git -C "$repo_dir" worktree add "$worktree_dir" "$branch" && cd "$worktree_dir" && claude --dangerously-skip-permissions
+    git -C "$repo_dir" worktree add "$worktree_dir" \
+      && cd "$worktree_dir" \
+      && claude --dangerously-skip-permissions
   fi
 }
 
 wtd() {
-  local current_dir="$PWD"
   local worktree_base="$HOME/worktree"
-  local repo_dir="/work/"*(/Y1)
+  local repo_dir=(/work/*(/))
+  local branch="$1"
 
-  if [[ $current_dir != "$worktree_base"/* ]]; then
-    echo "Error: Not in a worktree directory"
+  if [[ -z $branch ]]; then
+    # No argument provided, use current directory
+    local current_dir="$PWD"
+    if [[ $current_dir != "$worktree_base"/* ]]; then
+      echo "Error: Not in a worktree directory"
+      echo "Usage: wtd [branch-name]"
+      return 1
+    fi
+    branch="${current_dir#$worktree_base/}"
+    branch="${branch%%/*}" # Get just the branch name if in a subdirectory
+    cd "$repo_dir"
+  fi
+
+  if [[ ! -d "$worktree_base/$branch" ]]; then
+    echo "Error: Worktree '$branch' not found"
     return 1
   fi
 
-  local branch="${current_dir#$worktree_base/}"
-  branch="${branch%%/*}" # Get just the branch name if in a subdirectory
-
-  cd "$repo_dir" \
-    && git worktree remove "$worktree_base/$branch" \
-    && git branch -D "$branch"
+  git -C "$repo_dir" worktree remove "$worktree_base/$branch" \
+    && git -C "$repo_dir" branch -D "$branch"
 }
 
 # List all worktrees
 wtl() {
-  local repo_dir="/work/"*(/Y1)
+  local repo_dir=(/work/*(/))
   git -C "$repo_dir" worktree list
 }
 
@@ -70,7 +84,7 @@ wts() {
 # Create worktree for a NEW branch (branched from main)
 wtb() {
   local branch="$1"
-  local repo_dir="/work/"*(/Y1)
+  local repo_dir=(/work/*(/))
   local worktree_dir="$HOME/worktree/$branch"
 
   if [[ -z $branch ]]; then
@@ -91,13 +105,13 @@ wtsync() {
 
 # Return to main repo
 wtr() {
-  local repo_dir="/work/"*(/Y1)
+  local repo_dir=(/work/*(/))
   cd "$repo_dir"
 }
 
 # Clean up merged worktrees
 wtc() {
-  local repo_dir="/work/"*(/Y1)
+  local repo_dir=(/work/*(/))
   local worktree_base="$HOME/worktree"
 
   git -C "$repo_dir" fetch origin main
