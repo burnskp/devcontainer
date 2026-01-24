@@ -173,11 +173,10 @@ else
 fi
 container_dir="$(basename "$root")"
 
-# Open in a new wezterm window by default, unless already in one (DEV_WINDOW=1)
-if [[ -z ${DEV_WINDOW:-} ]]; then
+if [ "${TMUX+x}" ]; then
+  unset TMUX
   echo "Opening a new terminal"
-  export DEV_WINDOW=1
-  wezterm start --always-new-process --cwd "$PWD" -- zsh -lc "dev" &
+  ghostty --working-directory="$PWD" --title="dev - $container_dir" -e zsh -lc dev &
   exit
 fi
 
