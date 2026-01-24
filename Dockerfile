@@ -158,7 +158,8 @@ ENV HOME="/home/ubuntu"
 ENV ZDOTDIR="$HOME/.config/zsh"
 RUN bat cache --build
 
-RUN rustup default stable
+RUN rustup default stable \
+  && rustup component add rust-analyzer
 
 RUN mkdir -p ~/.local/share/tmux/plugins \
    && git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm \
