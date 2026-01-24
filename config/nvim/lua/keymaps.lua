@@ -177,7 +177,7 @@ vim.keymap.set("n", "<leader>nt", "<cmd>ProjectNote todo float<CR>", { desc = "P
 vim.keymap.set("n", "<leader>nT", "<cmd>ProjectNote todo<CR>", { desc = "Project todo note" })
 vim.keymap.set("n", "<leader>P", '"+P', { desc = "Paste clipboard before cursor" })
 vim.keymap.set("n", "<leader>p", '"+p', { desc = "Paste clipboard" })
-vim.keymap.set("n", "<leader>un", "<cmd>set numbers!<CR>", { desc = "Toggle line numbers" })
+vim.keymap.set("n", "<leader>un", "<cmd>set number!<CR>", { desc = "Toggle line numbers" })
 vim.keymap.set("n", "<leader>uNa", function()
   require("noice").cmd("all")
 end, { desc = "Noice all" })
