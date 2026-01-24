@@ -98,7 +98,6 @@ RUN BAT_EXTRAS_VERSION=$(curl -s https://api.github.com/repos/eth-p/bat-extras/r
 RUN --mount=type=cache,target=/root/.bun/install/cache \
   export BUN_INSTALL="/usr/local" \
   && bun add -g @actions/languageserver \
-  && bun add -g @anthropic-ai/claude-code \
   && bun add -g @biomejs/biome \
   && bun add -g @github/copilot \
   && bun add -g @github/copilot-language-server \
@@ -161,6 +160,8 @@ RUN bat cache --build
 
 RUN rustup default stable \
   && rustup component add rust-analyzer
+
+RUN curl -fsSL https://claude.ai/install.sh | bash
 
 RUN mkdir -p ~/.local/share/tmux/plugins \
    && git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm \
