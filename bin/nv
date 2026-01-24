@@ -146,6 +146,7 @@ run_container() {
     -v "$HOME/.ssh/config":/home/ubuntu/.ssh/config:ro \
     -v "$HOME/.ssh/pub":/home/ubuntu/.ssh/pub:ro \
     -e TERM \
+    -e AI_AGENT="${AI_AGENT:-claude}" \
     -v "$XDG_CONFIG_HOME/git":/home/ubuntu/.config/git:ro \
     -v "$XDG_DATA_HOME/notes":/home/ubuntu/.local/share/notes:rw \
     -v "$DATA:/data" \

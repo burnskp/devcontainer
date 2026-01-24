@@ -22,6 +22,7 @@ setopt nonomatch
 setopt noshwordsplit
 setopt prompt_subst
 
+export AI_AGENT="${AI_AGENT:-opencode}"
 export BAT_THEME="Catppuccin Latte"
 export GLAMOUR_STYLE="$HOME/.config/glamour/catppuccin-latte.json"
 export EDITOR="nvim"
@@ -51,7 +52,7 @@ check_paths+="${HOME}/bin"
 check_paths+="${XDG_DATA_HOME}/npm/bin"
 
 for p in $check_paths; do
-  if [[ -d "$p" ]]; then
+  if [[ -d $p ]]; then
     path+="$p"
   fi
 done
