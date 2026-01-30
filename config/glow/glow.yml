@@ -1,5 +1,5 @@
 # style name or JSON path (default "auto")
-style: /home/burnskp/.config/glamour/catppuccin-latte.json
+style: /home/ubuntu/.config/glamour/catppuccin-latte.json
 # mouse support (TUI-mode only)
 mouse: false
 # use pager to display markdown
