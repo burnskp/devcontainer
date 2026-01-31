@@ -71,6 +71,7 @@ RUN add-apt-repository -y universe \
   uidmap \
   unzip \
   wget \
+  yq \
   zsh \
   && apt-get autoremove -y \
   && apt-get clean \
@@ -120,8 +121,9 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 
 RUN export UV_TOOL_BIN_DIR=/usr/local/bin \
   && export UV_TOOL_DIR=/opt/uv \
-  && uv tool install ruff \
-  && uv tool install pre-commit
+  && uv tool install mdformat \
+  && uv tool install pre-commit \
+  && uv tool install ruff
 
 RUN LUA_VERSION=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest | grep -Po '"tag_name": "\K.*?(?=")') \
     && if [ "$TARGETARCH" = "amd64" ]; then \
@@ -180,10 +182,11 @@ RUN mkdir -p $HOME/.local/share/nvim $HOME/.local/state \
   && nvim --headless -c "lua require('blink.cmp.fuzzy.download').ensure_downloaded(function(err) if err then print(err) end end)" -c "qall" 2>&1 \
   | tee ~/.local/share/nvim/update.log
 
-RUN --mount=type=cache,target=/home/ubuntu/.cargo/registry,uid=1000,gid=1000 \
-  cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
-  && cargo build --release \
-  && cd ~/.local/share/nvim/site/pack/core/opt/avante.nvim \
+# Workaround for issue building frizbee v6.0.0
+RUN cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
+  && cargo +nightly-2025-09-30 build --release
+
+RUN cd ~/.local/share/nvim/site/pack/core/opt/avante.nvim \
   && make
 
 ENTRYPOINT ["/start.sh"]
