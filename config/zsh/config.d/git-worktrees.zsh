@@ -1,18 +1,6 @@
 #!/bin/zsh
 WORKTREE_DIR="$HOME/worktree"
 
-
-agent() {
-  if [[ "$AI_AGENT" == "opencode" ]]; then
-    opencode
-  elif [[ "$AI_AGENT" == "claude" ]]; then
-    claude --dangerously-skip-permissions
-  else
-    echo "Error: AI_AGENT environment variable is not set to a supported value."
-    return 1
-  fi
-}
-
 # Switch to existing worktree or create from existing branch, then open AI tool
 wt() {
   local branch="$1"
