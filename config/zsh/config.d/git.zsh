@@ -10,8 +10,8 @@ alias gb="git branch"
 alias gbl="git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format='%(refname:short)'"
 alias gc="git commit -v"
 alias gcam="git commit --amend"
-alias gcb="git checkout -b"
-alias gch="git checkout"
+alias gcb="git switch -c"
+alias gch="git switch"
 alias gcl="git clone"
 alias gcm="git commit -m"
 alias gcp="git commit && git push origin HEAD"
@@ -30,13 +30,24 @@ alias gmv="git mv"
 alias gp='git push origin HEAD'
 alias gpf='git push --force-with-lease origin HEAD'
 alias gpo='git push origin'
-alias gpub='git pull --rebase=merges --prune origin'
+alias gpub='git pull --rebase=merges --prune'
 alias grm="git rm"
 alias grb="git rebase"
 alias grh="git reset HEAD"
 alias gs="git status -s"
 alias gst="git status"
 alias gundo="git reset HEAD~1 --soft"
+alias gf="git fetch"
+alias gfa="git fetch --all --prune"
+alias grc="git rebase --continue"
+alias gra="git rebase --abort"
+alias gsta="git stash push"
+alias gstp="git stash pop"
+alias gstl="git stash list"
+
+gwip() {
+  git add -A && git commit -m "WIP: ${*:-work in progress}" --no-verify
+}
 
 # git functions
 gacmp() {
@@ -50,10 +61,9 @@ gcmp() {
 gm() {
   local currentBranch
   if currentBranch=$(git symbolic-ref --short -q HEAD); then
-    git checkout "$1" && \
-      git pull && \
-      git checkout "$currentBranch" && \
-      git rebase "$1"
+    git fetch origin "$1" && \
+      git switch "$currentBranch" && \
+      git rebase --rebase-merges origin/"$1"
   else
     echo "Not on any branch"
     return 1
@@ -61,28 +71,31 @@ gm() {
 }
 
 gss() {
-  git stash || { echo "Stash failed"; return 1; }
-  if ! git checkout "$1"; then
-    echo "Checkout failed, restoring stash"
-    git stash pop
+  local stashed=0
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    git stash push || { echo "Stash failed"; return 1; }
+    stashed=1
+  fi
+  if ! git switch "$1"; then
+    echo "Switch failed"
+    [[ $stashed -eq 1 ]] && git stash pop
     return 1
   fi
-  if ! git stash pop; then
-    echo "Warning: stash pop had conflicts, resolve manually"
-    return 1
+  if [[ $stashed -eq 1 ]]; then
+    if ! git stash pop; then
+      echo "Warning: stash pop had conflicts, resolve manually"
+      return 1
+    fi
   fi
 }
 
 grbm() {
-  local current
-  current=$(git rev-parse --abbrev-ref HEAD)
-  git fetch origin main && \
-    git rebase origin/main
+  git fetch origin main && git rebase --rebase-merges origin/main
 }
 
 gu() {
   git fetch "$1" --prune
-  git merge --ff-only "$1/$2" || git rebase --rebase=merges "$1/$2"
+  git merge --ff-only "$1/$2" || git rebase --rebase-merges "$1/$2"
 }
 
 gsearch() {
@@ -107,7 +120,7 @@ fsb() {
   local pattern=$*
   local branches branch
   branches=$(git branch --all | awk 'tolower($0) ~ /'"$pattern"'/') &&
-    branch=$(echo "$branches" | fzf -p -1 -0 +m) &&
+    branch=$(echo "$branches" | fzf -1 -0 +m) &&
     if [[ -z "$branch" ]]; then
       echo "[$0] No branch matches the provided pattern"
       return 1
@@ -119,12 +132,12 @@ fshow() {
   git log --graph --color=always \
     --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
     fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort --preview \
-      'f() { set -- $(echo -- "$@" | grep -o "[a-f0-9]\{7\}"); [ $# -eq 0 ] || git show --color=always $1 ; }; f {}' \
+      'f() { set -- $(echo -- "$@" | grep -o "[a-f0-9]\{7,\}"); [ $# -eq 0 ] || git show --color=always $1 ; }; f {}' \
       --header "enter to view, ctrl-o to checkout" \
       --bind "q:abort,ctrl-f:preview-page-down,ctrl-b:preview-page-up" \
-      --bind "ctrl-o:become:(echo {} | grep -o '[a-f0-9]\{7\}' | head -1 | xargs git checkout)" \
+      --bind "ctrl-o:become:(echo {} | grep -o '[a-f0-9]\{7,\}' | head -1 | xargs git checkout)" \
       --bind "ctrl-m:execute:
-(grep -o '[a-f0-9]\{7\}' | head -1 |
+(grep -o '[a-f0-9]\{7,\}' | head -1 |
 xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
       {}
 FZF-EOF" --preview-window=right:60%
