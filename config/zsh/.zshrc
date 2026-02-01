@@ -1,5 +1,7 @@
 #!/bin/zsh
+(( $+commands[direnv] )) && eval "$(direnv hook zsh)"
 (( $+commands[starship] )) && eval "$(starship init zsh)"
+(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
 
 for i in $XDG_CONFIG_HOME/zsh/config.d/*.zsh; do
   source "$i"

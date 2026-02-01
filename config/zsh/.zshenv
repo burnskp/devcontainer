@@ -13,8 +13,12 @@ fi
 HISTFILE="$XDG_STATE_HOME/zsh/history"
 HISTSIZE=10000
 SAVEHIST=10000
-setopt SHARE_HISTORY
+
+setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+setopt SHARE_HISTORY
 
 set -o noclobber
 setopt nobeep

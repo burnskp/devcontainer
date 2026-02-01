@@ -40,6 +40,7 @@ RUN add-apt-repository -y universe \
   && apt-get install -y \
   bat \
   build-essential \
+  direnv \
   eza \
   fd-find \
   fuse-overlayfs \
@@ -73,6 +74,7 @@ RUN add-apt-repository -y universe \
   unzip \
   wget \
   yq \
+  zoxide \
   zsh \
   && apt-get autoremove -y \
   && apt-get clean \
