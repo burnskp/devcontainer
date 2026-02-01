@@ -20,6 +20,7 @@ require("plugins.nvim-surround")
 require("plugins.sidekick")
 require("plugins.avante")
 require("plugins.notes")
+require("plugins.neotest")
 
 require("plugins.lualine")
 

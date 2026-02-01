@@ -10,6 +10,7 @@ require("which-key").setup({
     { "<leader>k", group = "Sidekick" },
     { "<leader>l", group = "LSP" },
     { "<leader>n", group = "Notes" },
+    { "<leader>t", group = "Test" },
     { "<leader>u", group = "Toggle" },
     { "<leader>uN", group = "Noice" },
     { "<leader>w", group = "Window" },
