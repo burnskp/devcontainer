@@ -1,5 +1,5 @@
 #!/bin/zsh
-eval "$(starship init zsh)"
+(( $+commands[starship] )) && eval "$(starship init zsh)"
 
 for i in $XDG_CONFIG_HOME/zsh/config.d/*.zsh; do
   source "$i"
@@ -16,5 +16,3 @@ bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
-
-typeset -U PATH

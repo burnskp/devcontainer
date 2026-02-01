@@ -38,6 +38,6 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 # Pass urls as literals if glob fails
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
-url_commands=(curl scp rsync wget)
+url_commands=(curl git scp rsync wget)
 zstyle -e :urlglobber url-other-schema \
   '[[ $url_commands[(i)$words[1]] -le ${#url_commands} ]] && reply=("*") || reply=(http https ftp)'

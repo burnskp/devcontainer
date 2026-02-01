@@ -10,6 +10,12 @@ if ! [ -d "$XDG_STATE_HOME/zsh" ]; then
   mkdir -p $XDG_STATE_HOME/zsh
 fi
 
+HISTFILE="$XDG_STATE_HOME/zsh/history"
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+
 set -o noclobber
 setopt nobeep
 setopt completeinword
