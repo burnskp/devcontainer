@@ -46,6 +46,7 @@ RUN add-apt-repository -y universe \
   fzf \
   git \
   git-delta \
+  git-lfs \
   glow \
   golang-go \
   lazygit \
