@@ -103,13 +103,23 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
   && bun add -g @biomejs/biome \
   && bun add -g @github/copilot \
   && bun add -g @github/copilot-language-server \
+  && bun add -g @tailwindcss/language-server \
+  && bun add -g create-vite \
   && bun add -g markdownlint-cli2 \
   && bun add -g opencode-ai \
   && bun add -g pyright \
   && bun add -g snyk \
   && bun add -g tree-sitter-cli \
+  && bun add -g typescript \
+  && bun add -g typescript-language-server \
+  && bun add -g vite \
+  && bun add -g vitest \
   && bun add -g vscode-json-languageservice \
-  && bun add -g yaml-language-server
+  && bun add -g yaml-language-server \
+  && bun add -g playwright
+
+RUN gem install solargraph
+
 
 RUN --mount=type=cache,target=/root/.cache/go-build \
   --mount=type=cache,target=/go/pkg \
