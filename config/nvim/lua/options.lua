@@ -29,8 +29,39 @@ vim.opt.spelllang = "en_us"
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.tabstop = 2
-vim.opt.titlestring = "n:%t"
-vim.opt.title = true
+-- Set tmux window title (only when running inside tmux)
+if vim.env.TMUX then
+  local function set_tmux_title(title)
+    io.stdout:write(string.format("\027k%s\027\\", title))
+    io.stdout:flush()
+  end
+
+  local function update_nvim_title()
+    local filename = vim.fn.expand("%:t")
+    if filename == "" then
+      filename = "[No Name]"
+    elseif #filename > 30 then
+      filename = filename:sub(1, 27) .. "..."
+    end
+    set_tmux_title("n:" .. filename)
+  end
+
+  local function reset_title()
+    local dir = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+    if vim.fn.getcwd() == vim.env.HOME then
+      dir = "~"
+    end
+    set_tmux_title("d:" .. dir)
+  end
+
+  vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained" }, {
+    callback = update_nvim_title,
+  })
+
+  vim.api.nvim_create_autocmd("VimLeave", {
+    callback = reset_title,
+  })
+end
 vim.opt.wrap = true
 
 -- Set backup options
