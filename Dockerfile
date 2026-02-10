@@ -2,11 +2,8 @@
 # hadolint global ignore=DL3008,DL3015,DL3059,DL4006
 FROM ubuntu:25.10
 
-ARG TARGETARCH
-ARG AI_AGENT
-
 ENV DEBIAN_FRONTEND=noninteractive
-ENV GOARCH=${TARGETARCH}
+ENV GOARCH=arm64
 ENV GOOS=linux
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
@@ -60,8 +57,6 @@ RUN add-apt-repository -y universe \
   python3 \
   python3-pip \
   python3-venv \
-  ruby \
-  ruby-dev \
   ripgrep \
   shellcheck \
   shfmt \
@@ -85,14 +80,8 @@ RUN add-apt-repository -y universe \
   && echo "root:1:65535\nubuntu:100000:65535" > /etc/subuid \
   && echo "root:1:65535\nubuntu:100000:65535" > /etc/subgid
 
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-  export NVIM=nvim-linux-x86_64; \
-  else \
-  export NVIM="nvim-linux-${TARGETARCH}"; \
-  fi \
-  && curl -L https://github.com/neovim/neovim/releases/download/nightly/$NVIM.tar.gz -o /tmp/nvim.tgz \
-  && tar -xf /tmp/nvim.tgz --strip-components=1 -C /usr/local \
-  && rm /tmp/nvim.tgz
+RUN curl -fsSL "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-arm64.tar.gz" \
+  | tar -xzf - -C /usr/local --strip-components=1
 
 RUN BAT_EXTRAS_VERSION=$(curl -s https://api.github.com/repos/eth-p/bat-extras/releases/latest | grep -Po '"tag_name": "\K.*?(?=")') \
   && curl -sLo /tmp/bat-extras.zip "https://github.com/eth-p/bat-extras/releases/download/${BAT_EXTRAS_VERSION}/bat-extras-${BAT_EXTRAS_VERSION#v}.zip" \
@@ -105,30 +94,19 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
   && bun add -g @biomejs/biome \
   && bun add -g @github/copilot \
   && bun add -g @github/copilot-language-server \
-  && bun add -g @tailwindcss/language-server \
-  && bun add -g create-vite \
   && bun add -g markdownlint-cli2 \
   && bun add -g opencode-ai \
   && bun add -g pyright \
   && bun add -g snyk \
   && bun add -g tree-sitter-cli \
-  && bun add -g typescript \
-  && bun add -g typescript-language-server \
-  && bun add -g vite \
-  && bun add -g vitest \
   && bun add -g vscode-json-languageservice \
-  && bun add -g yaml-language-server \
-  && bun add -g playwright
-
-RUN gem install solargraph
-
+  && bun add -g yaml-language-server
 
 RUN --mount=type=cache,target=/root/.cache/go-build \
   --mount=type=cache,target=/go/pkg \
   export GOBIN=/usr/local/bin \
   && go install github.com/docker/docker-language-server/cmd/docker-language-server@latest \
   && go install github.com/nametake/golangci-lint-langserver@latest \
-  && go install github.com/skipants/update-action-pins@latest \
   && go install github.com/suzuki-shunsuke/pinact/v3/cmd/pinact@latest \
   && go install golang.org/x/tools/gopls@latest
 
@@ -139,24 +117,14 @@ RUN export UV_TOOL_BIN_DIR=/usr/local/bin \
   && uv tool install ruff
 
 RUN LUA_VERSION=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest | grep -Po '"tag_name": "\K.*?(?=")') \
-    && if [ "$TARGETARCH" = "amd64" ]; then \
-         LUA_ARCH="linux-x64"; \
-       else \
-         LUA_ARCH="linux-arm64"; \
-       fi \
-    && curl -L https://github.com/LuaLS/lua-language-server/releases/download/${LUA_VERSION}/lua-language-server-${LUA_VERSION}-${LUA_ARCH}.tar.gz -o /tmp/lua-ls.tar.gz \
+    && curl -L https://github.com/LuaLS/lua-language-server/releases/download/${LUA_VERSION}/lua-language-server-${LUA_VERSION}-linux-arm64.tar.gz -o /tmp/lua-ls.tar.gz \
     && mkdir -p /opt/lua-language-server \
     && tar -xvf /tmp/lua-ls.tar.gz -C /opt/lua-language-server \
     && echo '#!/bin/bash\nexec "/opt/lua-language-server/bin/lua-language-server" "$@"' > /usr/local/bin/lua-language-server \
     && chmod +x /usr/local/bin/lua-language-server \
     && rm /tmp/lua-ls.tar.gz
 
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-         MARKSMAN_ARCH="linux-x64"; \
-       else \
-         MARKSMAN_ARCH="linux-arm64"; \
-       fi \
-    && curl -Lo /usr/local/bin/marksman https://github.com/artempyanykh/marksman/releases/latest/download/marksman-${MARKSMAN_ARCH} \
+RUN curl -Lo /usr/local/bin/marksman https://github.com/artempyanykh/marksman/releases/latest/download/marksman-linux-arm64 \
     && chmod +x /usr/local/bin/marksman
 
 COPY start.sh /start.sh
@@ -173,11 +141,6 @@ ENV HOME="/home/ubuntu"
 ENV ZDOTDIR="$HOME/.config/zsh"
 RUN bat cache --build
 
-RUN rustup default stable \
-  && rustup component add rust-analyzer
-
-RUN curl -fsSL https://claude.ai/install.sh | bash
-
 RUN mkdir -p ~/.local/share/tmux/plugins \
    && git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm \
    && ~/.local/share/tmux/plugins/tpm/bin/install_plugins
@@ -186,7 +149,6 @@ RUN mkdir -p ~/.local/share/tmux/plugins \
 RUN mkdir -p $HOME/.local/share/nvim $HOME/.local/state \
   && opencode models \
   && rm -rf $HOME/.local/share/opencode \
-  && ln -s /data/claude $HOME/.config/claude \
   && ln -s /data/configstore $HOME/.config/configstore \
   && ln -s /data/copilot $HOME/.config/.copilot \
   && ln -s /data/github-copilot $HOME/.config/github-copilot \
@@ -195,9 +157,8 @@ RUN mkdir -p $HOME/.local/share/nvim $HOME/.local/state \
   && nvim --headless -c "lua require('blink.cmp.fuzzy.download').ensure_downloaded(function(err) if err then print(err) end end)" -c "qall" 2>&1 \
   | tee ~/.local/share/nvim/update.log
 
-# Workaround for issue building frizbee v6.0.0
 RUN cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
-  && cargo +nightly-2025-09-30 build --release
+  && cargo build --release
 
 RUN cd ~/.local/share/nvim/site/pack/core/opt/avante.nvim \
   && make

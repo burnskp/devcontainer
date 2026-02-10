@@ -8,13 +8,6 @@ help() {
 }
 
 agent() {
-  if [[ "$AI_AGENT" == "opencode" ]]; then
-    opencode "$@"
-  elif [[ "$AI_AGENT" == "claude" ]]; then
-    claude --dangerously-skip-permissions "$@"
-  else
-    echo "Error: AI_AGENT environment variable is not set to a supported value."
-    return 1
-  fi
+  opencode "$@"
 }
 

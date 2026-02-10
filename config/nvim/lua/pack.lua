@@ -24,8 +24,6 @@ vim.pack.add({
   "https://github.com/nvim-neotest/nvim-nio",
   "https://github.com/nvim-tree/nvim-web-devicons",
   "https://github.com/nvim-treesitter/nvim-treesitter-context",
-  "https://github.com/olimorris/neotest-rspec",
-  "https://github.com/rouge8/neotest-rust",
   "https://github.com/sindrets/diffview.nvim",
   "https://github.com/stevearc/conform.nvim",
   "https://github.com/stevearc/dressing.nvim",
