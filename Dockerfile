@@ -40,7 +40,6 @@ RUN add-apt-repository -y universe \
   direnv \
   eza \
   fd-find \
-  fuse-overlayfs \
   fzf \
   git \
   git-delta \
@@ -52,8 +51,6 @@ RUN add-apt-repository -y universe \
   lua5.4 \
   nodejs \
   packer \
-  podman \
-  podman-docker\
   python3 \
   python3-pip \
   python3-venv \
@@ -65,7 +62,6 @@ RUN add-apt-repository -y universe \
   terraform \
   terraform-ls \
   tmux \
-  uidmap \
   unzip \
   wget \
   yq \
@@ -76,9 +72,7 @@ RUN add-apt-repository -y universe \
   && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/man/* \
   && chsh -s /bin/zsh ubuntu \
   && ln -s "$(which fdfind)" /usr/local/bin/fd \
-  && ln -s "$(which batcat)" /usr/local/bin/bat \
-  && echo "root:1:65535\nubuntu:100000:65535" > /etc/subuid \
-  && echo "root:1:65535\nubuntu:100000:65535" > /etc/subgid
+  && ln -s "$(which batcat)" /usr/local/bin/bat
 
 RUN curl -fsSL "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-arm64.tar.gz" \
   | tar -xzf - -C /usr/local --strip-components=1

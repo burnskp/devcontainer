@@ -1,5 +1,5 @@
 build:
-	docker buildx build --output type=image,name=ghcr.io/burnskp/dev:latest,compression=zstd,compression-level=1 --no-cache -m 8g .
+	container build --tag ghcr.io/burnskp/dev:latest --no-cache --memory 8g .
 
 cache:
-	docker buildx build --output type=image,name=ghcr.io/burnskp/dev:latest,compression=zstd,compression-level=1  -m 8g .
+	container build --tag ghcr.io/burnskp/dev:latest --memory 8g .
