@@ -114,7 +114,7 @@ end, { desc = "Git log (current file)" })
 vim.keymap.set("n", "<leader>gg", function()
   Snacks.lazygit()
 end, { desc = "Lazy Git" })
-vim.keymap.set("n", "<leader>gl", function()
+vim.keymap.set("n", "<leader>gO", function()
   Snacks.gitbrowse()
 end, { desc = "Open in git browser" })
 vim.keymap.set("n", "<leader>gl", function()
@@ -173,8 +173,8 @@ vim.keymap.set("n", "<leader>ns", "<cmd>ProjectNote scratch float<CR>", { desc =
 vim.keymap.set("n", "<leader>nS", "<cmd>ProjectNote scratch<CR>", { desc = "Project scratch note" })
 vim.keymap.set("n", "<leader>nt", "<cmd>Journal float<CR>", { desc = "Journal (float)" })
 vim.keymap.set("n", "<leader>nT", "<cmd>Journal<CR>", { desc = "Journal" })
-vim.keymap.set("n", "<leader>nt", "<cmd>ProjectNote todo float<CR>", { desc = "Project todo note (float)" })
-vim.keymap.set("n", "<leader>nT", "<cmd>ProjectNote todo<CR>", { desc = "Project todo note" })
+vim.keymap.set("n", "<leader>no", "<cmd>ProjectNote todo float<CR>", { desc = "Project todo note (float)" })
+vim.keymap.set("n", "<leader>nO", "<cmd>ProjectNote todo<CR>", { desc = "Project todo note" })
 vim.keymap.set("n", "<leader>to", function() require("neotest").output.open({ enter = true }) end, { desc = "Show output" })
 vim.keymap.set("n", "<leader>tO", function() require("neotest").output_panel.toggle() end, { desc = "Toggle output panel" })
 vim.keymap.set("n", "<leader>tr", function() require("neotest").run.run() end, { desc = "Run nearest test" })
@@ -204,10 +204,8 @@ vim.keymap.set("n", "<leader>wp", "<cmd>pclose<CR>", { desc = "Close preview win
 vim.keymap.set("n", "<leader>wz", "<C-w>|<C-w>_", { desc = "Maximize window" })
 vim.keymap.set("n", "<leader>y", '"+y', { desc = "Copy to clipboard" })
 vim.keymap.set("n", "<tab>", function()
-  if not require("sidekick").nes_jump_or_apply() then
-    return "<Tab>"
-  end
-end, { desc = "Sidekick jump or apply" })
+  return require("sidekick").nes_jump_or_apply() and "" or "<Tab>"
+end, { desc = "Sidekick jump or apply", expr = true })
 vim.keymap.set("n", "[[", function()
   Snacks.words.jump(-vim.v.count1)
 end, { desc = "Jump to previous word" })

@@ -149,7 +149,9 @@ RUN mkdir -p $HOME/.local/share/nvim $HOME/.local/state \
   && ln -s /data/lazygit $HOME/.local/state/lazygit \
   && ln -s /data/opencode $HOME/.local/share/opencode \
   && nvim --headless -c "lua require('blink.cmp.fuzzy.download').ensure_downloaded(function(err) if err then print(err) end end)" -c "qall" 2>&1 \
-  | tee ~/.local/share/nvim/update.log
+  | tee ~/.local/share/nvim/update.log \
+  && nvim --headless -c "lua require('build.treesitter')" -c "qall" 2>&1 \
+  | tee -a ~/.local/share/nvim/update.log
 
 RUN cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
   && cargo build --release

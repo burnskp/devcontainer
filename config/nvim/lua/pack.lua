@@ -1,4 +1,5 @@
 vim.pack.add({
+  "https://github.com/b0o/SchemaStore.nvim",
   "https://github.com/burnskp/notes.nvim",
   "https://github.com/catppuccin/nvim",
   "https://github.com/folke/noice.nvim",
