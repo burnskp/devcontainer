@@ -1,18 +1,14 @@
 require("which-key").setup({
-  preset = "helix",
-  delay = 800,
+  delay = 300,
   spec = {
-    { "<leader><leader>", group = "Smart Splits" },
-    { "<leader>a", group = "Avante" },
+    { "<leader>a", group = "AI" },
     { "<leader>f", group = "Find" },
     { "<leader>g", group = "Git" },
-    { "<leader>h", group = "GitSigns" },
-    { "<leader>k", group = "Sidekick" },
+    { "<leader>h", group = "Hunk" },
     { "<leader>l", group = "LSP" },
     { "<leader>n", group = "Notes" },
-    { "<leader>t", group = "Test" },
-    { "<leader>u", group = "Toggle" },
-    { "<leader>uN", group = "Noice" },
+    { "<leader>u", group = "UI/Toggle" },
     { "<leader>w", group = "Window" },
+    { "<leader>x", group = "Trouble" },
   },
 })

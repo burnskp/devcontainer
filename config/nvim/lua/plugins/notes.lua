@@ -1,5 +1,5 @@
 require("notes").setup({
-  notesDir = "~/.local/share/notes/global",
-  projectNotesDir = "~/.local/share/notes/project",
-  journalDir = "~/.local/share/notes/journal",
+  notesDir = "/home/user/.local/share/notes/global",
+  projectNotesDir = "/home/user/.local/share/notes/project",
+  journalDir = "/home/user/.local/share/notes/journal",
 })

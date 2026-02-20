@@ -1,43 +1,37 @@
 require("blink.cmp").setup({
   cmdline = {
+    sources = { "cmdline", "path" },
     keymap = { preset = "inherit" },
     completion = { menu = { auto_show = true } },
   },
   completion = {
-    documentation = { auto_show = false },
-    list = {
-      selection = {
-        preselect = function()
-          return not require("blink.cmp").snippet_active({ direction = 1 })
-        end,
-      },
-    },
+    documentation = { auto_show = true },
+    list = { selection = { preselect = false } },
   },
   keymap = {
-    preset = "super-tab",
+    preset = "default",
     ["<Tab>"] = {
       function(cmp)
-        if cmp.snippet_active() then
-          return cmp.accept()
-        else
-          return cmp.select_and_accept()
-        end
-      end,
-      "snippet_forward",
-      function() -- sidekick next edit suggestion
-        return require("sidekick").nes_jump_or_apply()
+        return cmp.select_and_accept()
       end,
       function()
-        return vim.lsp.inline_completion.get()
+        return require("sidekick").nes_jump_or_apply()
       end,
       "fallback",
     },
-    ["<C-k>"] = { "show", "show_documentation", "hide_documentation" },
+    ["<C-k>"] = { "hide_documentation", "show_documentation" },
     ["<C-s>"] = { "show_signature", "hide_signature", "fallback" },
   },
   signature = { enabled = true },
   sources = {
-    default = { "snippets", "avante", "lsp", "path", "buffer" },
-    providers = { avante = { module = "blink-cmp-avante", name = "Avante" } },
+    default = { "lsp", "copilot", "path", "buffer" },
+    providers = {
+      copilot = {
+        name = "copilot",
+        module = "blink-copilot",
+        score_offset = 100,
+        async = true,
+      },
+    },
   },
 })

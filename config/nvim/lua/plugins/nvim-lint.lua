@@ -1,14 +1,15 @@
 local lint = require("lint")
 
 lint.linters_by_ft = {
-  markdown = { "markdownlint-cli2" },
-  zsh = { "zsh" },
-  hcl = { "packer_validate" },
+  markdown = { "markdownlint" },
+  ruby = { "rubocop" },
+  sh = { "shellcheck" },
+  yaml = { "yamllint" },
+  hcl = { "tflint" },
+  terraform = { "tflint" },
 }
 
-lint.linters.packer_validate = require("lint.linters.packer_validate")()
-
-vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
+vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave" }, {
   callback = function()
     lint.try_lint()
   end,

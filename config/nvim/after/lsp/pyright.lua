@@ -1,13 +1,13 @@
+local has_ruff = vim.fn.executable("ruff") == 1
+
 return {
   settings = {
     pyright = {
-      -- Using Ruff's import organizer
-      disableOrganizeImports = true,
+      disableOrganizeImports = has_ruff,
     },
     python = {
       analysis = {
-        -- Ignore all files for analysis to exclusively use Ruff for linting
-        ignore = { "*" },
+        ignore = has_ruff and { "*" } or {},
       },
     },
   },

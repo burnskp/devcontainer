@@ -1,4 +1,6 @@
 vim.g.mapleader = " "
+vim.g.copilot_nes_debounce = 500
+vim.g.tmux_navigator_save_on_switch = 1
 
 vim.g.clipboard = {
   name = "OSC 52",
@@ -13,22 +15,19 @@ vim.g.clipboard = {
 vim.opt.autowrite = true
 vim.opt.expandtab = true
 vim.opt.grepprg = "rg --vimgrep"
-vim.opt.hlsearch = false
+vim.opt.ignorecase = true
 vim.opt.linebreak = true
 vim.opt.mouse = ""
-vim.opt.number = false
 vim.opt.scrolloff = 5
 vim.opt.shiftround = true
 vim.opt.shiftwidth = 2
-vim.opt.shortmess:append({ W = true, I = true, c = true, C = true })
-vim.opt.showmatch = true
+vim.opt.shortmess = "filnxtToOFWIcC"
 vim.opt.showmode = false
 vim.opt.smartcase = true
-vim.opt.smartindent = true
-vim.opt.spelllang = "en_us"
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.tabstop = 2
+vim.opt.termguicolors = true
 -- Set tmux window title (only when running inside tmux)
 if vim.env.TMUX then
   local function set_tmux_title(title)
@@ -83,4 +82,5 @@ vim.g.editorconfig = {}
 vim.g.editorconfig.trim_trailing_whitespace = true
 vim.g.editorconfig.tab_width = 2
 
-vim.cmd.colorscheme("catppuccin-latte")
+require("catppuccin").setup({ flavour = "latte" })
+vim.cmd.colorscheme("catppuccin")
