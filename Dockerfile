@@ -162,7 +162,4 @@ RUN mkdir -p $HOME/.local/share/nvim $HOME/.local/state \
 RUN cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
   && cargo build --release
 
-RUN cd ~/.local/share/nvim/site/pack/core/opt/avante.nvim \
-  && make
-
 ENTRYPOINT ["/start.sh"]
