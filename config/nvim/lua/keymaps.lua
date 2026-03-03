@@ -160,30 +160,3 @@ vim.keymap.set("n", "gt", function()
   require("treesj").toggle()
 end, { desc = "Treesj toggle" })
 
-vim.keymap.set("n", "<leader>aa", function()
-  require("sidekick.cli").toggle({ name = "opencode", focus = true })
-end, { desc = "Open OpenCode CLI" })
-vim.keymap.set("x", "<leader>aa", function()
-  require("sidekick.cli").toggle({ name = "opencode", focus = true })
-end, { desc = "Open OpenCode CLI" })
-vim.keymap.set("x", "<leader>as", function()
-  require("sidekick.cli").send()
-end, { desc = "Send selection to CLI" })
-vim.keymap.set("n", "<leader>at", function()
-  require("sidekick.cli").select()
-end, { desc = "Select AI tool" })
-vim.keymap.set("n", "<leader>ap", function()
-  require("sidekick.cli").prompt()
-end, { desc = "Select prompt" })
-vim.keymap.set("n", "<leader>ad", function()
-  require("sidekick.cli").close()
-end, { desc = "Close CLI session" })
-
-vim.keymap.set("n", "<tab>", function()
-  if not require("sidekick").nes_jump_or_apply() then
-    local keys = vim.api.nvim_replace_termcodes("<C-i>", true, false, true)
-    vim.api.nvim_feedkeys(keys, "n", false)
-    return ""
-  end
-  return ""
-end, { desc = "Goto/Apply Next Edit Suggestion", expr = true })

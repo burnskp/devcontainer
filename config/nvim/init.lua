@@ -16,12 +16,11 @@ require("plugins.lsp")
 require("plugins.conform")
 require("plugins.nvim-lint")
 require("plugins.copilot")
-require("plugins.copilot-lsp")
+require("plugins.avante")
 
 require("plugins.comment")
 require("plugins.gitsigns")
 require("plugins.nvim-surround")
-require("plugins.sidekick")
 require("plugins.notes")
 
 require("plugins.lualine")

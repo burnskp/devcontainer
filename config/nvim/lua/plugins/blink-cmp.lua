@@ -12,10 +12,14 @@ require("blink.cmp").setup({
     preset = "default",
     ["<Tab>"] = {
       function(cmp)
+        if vim.b[vim.api.nvim_get_current_buf()].nes_state then
+          cmp.hide()
+          return (
+            require("copilot-lsp.nes").apply_pending_nes()
+            and require("copilot-lsp.nes").walk_cursor_end_edit()
+          )
+        end
         return cmp.select_and_accept()
-      end,
-      function()
-        return require("sidekick").nes_jump_or_apply()
       end,
       "fallback",
     },
@@ -24,7 +28,7 @@ require("blink.cmp").setup({
   },
   signature = { enabled = true },
   sources = {
-    default = { "lsp", "copilot", "path", "buffer" },
+    default = { "avante", "lsp", "copilot", "path" },
     providers = {
       copilot = {
         name = "copilot",
@@ -32,6 +36,10 @@ require("blink.cmp").setup({
         score_offset = 100,
         async = true,
       },
+      avante = {
+        module = 'blink-cmp-avante',
+        name = 'Avante',
+      }
     },
   },
 })
