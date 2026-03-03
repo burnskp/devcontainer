@@ -1,13 +1,9 @@
 alias Grep="grep --color -i"
 alias grep="grep --color -i"
 alias nv="nvim"
-alias sz="source $XDG_CONFIG_HOME/zsh/.zshrc"
 alias va='source .venv/bin/activate'
 alias vi="nvim"
 alias wget="wget --hsts-file=$XDG_DATA_HOME/wget-hsts"
-
-alias nf="nvim -c Notes"
-alias ng="nvim -c NotesGrep"
 
 alias bathelp='bat --plain --language=help'
 alias bl="bat --paging=never -l log"
@@ -17,9 +13,9 @@ alias catp='bat --style header,snip,grid'
 alias diff="batdiff --delta"
 alias man="batman"
 alias pretty="prettybat"
-alias rg="batgrep -S"
-alias rgi="batgrep -i"
-alias rgs="batgrep -s"
+alias bg="batgrep -S"
+alias bgi="batgrep -i"
+alias bgs="batgrep -s"
 alias tf="tail -f | bat --paging=never -l log"
 
 alias la="eza -a --no-time --no-user --git --group-directories-first"

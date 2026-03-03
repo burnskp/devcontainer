@@ -6,8 +6,3 @@ catnc() {
 help() {
   "$@" --help 2>&1 | bathelp
 }
-
-agent() {
-  opencode "$@"
-}
-

@@ -13,6 +13,7 @@ fi
 HISTFILE="$XDG_STATE_HOME/zsh/history"
 HISTSIZE=10000
 SAVEHIST=10000
+WORDCHARS="*?_-[]~&;!#$%^(){}<>,\"'"
 
 setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_DUPS
@@ -32,7 +33,6 @@ setopt nonomatch
 setopt noshwordsplit
 setopt prompt_subst
 
-export AI_AGENT="${AI_AGENT:-opencode}"
 export BAT_THEME="Catppuccin Latte"
 export GLAMOUR_STYLE="$HOME/.config/glamour/catppuccin-latte.json"
 export EDITOR="nvim"
