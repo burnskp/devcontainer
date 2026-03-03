@@ -1,6 +1,6 @@
 local parsers = require("treesitter.parsers")
 
-require("nvim-treesitter.configs").setup({
+require("nvim-treesitter").setup({
   ensure_installed = parsers,
   highlight = { enable = true },
   indent = { enable = true },
