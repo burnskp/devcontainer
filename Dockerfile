@@ -32,6 +32,8 @@ RUN add-apt-repository -y universe \
   && curl -fsSL "https://deb.nodesource.com/setup_24.x" | bash - \
   && curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com noble main" > /etc/apt/sources.list.d/hashicorp.list \
+  && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg > /usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list \
   && apt-get update \
   && apt-get full-upgrade -y \
   && apt-get install -y \
@@ -42,6 +44,7 @@ RUN add-apt-repository -y universe \
   fd-find \
   fuse-overlayfs \
   fzf \
+  gh \
   git \
   git-delta \
   git-lfs \
@@ -159,7 +162,7 @@ RUN mkdir -p $HOME/.local/share/nvim $HOME/.local/state \
   && nvim --headless -c "lua require('build.treesitter')" -c "qall" 2>&1 \
   | tee -a ~/.local/share/nvim/update.log
 
-RUN cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp \
-  && cargo build --release
+RUN cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp && cargo build --release
+RUN cd ~/.local/share/nvim/site/pack/core/opt/avante.nvim && make
 
 ENTRYPOINT ["/start.sh"]
